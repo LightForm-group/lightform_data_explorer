@@ -1,6 +1,6 @@
 from typing import List
 
-from materials_app.db import Sample
+from lf_data_explorer.db import Sample
 
 
 def get_all_samples() -> List[Sample]:

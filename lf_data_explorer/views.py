@@ -1,7 +1,7 @@
-from materials_app import app
+from lf_data_explorer import app
 from flask import render_template
 
-from materials_app.queries import get_all_samples
+from lf_data_explorer.queries import get_all_samples
 
 
 @app.route('/')
