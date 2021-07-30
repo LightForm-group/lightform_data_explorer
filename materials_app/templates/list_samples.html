@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% set active_page = "list_samples" %}
+{% block body %}
+    This is the list samples page.
+    <ul>
+    {%  for sample in samples %}
+        <li>{{ sample.sample_name }}</li>
+    {% endfor %}
+    </ul>
+{%  endblock %}
