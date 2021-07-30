@@ -4,8 +4,13 @@ app = Flask(__name__, static_url_path='/static')
 
 
 @app.route('/')
-def hello_world():
-    return render_template("home.html")
+def show_index():
+    return render_template("index.html")
+
+
+@app.route('/add_sample')
+def show_add_sample():
+    return render_template('add_sample.html')
 
 
 if __name__ == '__main__':
