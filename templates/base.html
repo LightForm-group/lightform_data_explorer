@@ -18,6 +18,9 @@
 <body>
 
 <div class="container">
+
+    {% set navigation_bar = [('/', 'index', 'Home'), ('add_sample', 'add_sample', 'Add Sample'), ('about', 'about', 'About')] -%}
+
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
             <img class="bi me-2" height=40 width=40 src="../static/logo_small.png" alt="Lightform logo">
@@ -25,11 +28,12 @@
         </a>
 
         <ul class="nav nav-pills">
-            <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
-            <li class="nav-item"><a href="add_sample" class="nav-link">Add sample</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">View Samples</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+
+            {% for href, id, caption in navigation_bar %}
+                <li class="nav-item"><a href="{{ href|e }}"
+                                        class="nav-link{% if id == active_page %} active{% endif %}">{{ caption|e }}</a>
+                </li>
+            {% endfor %}
         </ul>
     </header>
 </div>

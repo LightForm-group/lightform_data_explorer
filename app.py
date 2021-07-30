@@ -13,5 +13,10 @@ def show_add_sample():
     return render_template('add_sample.html')
 
 
+@app.route('/about')
+def show_about():
+    return render_template('about.html')
+
+
 if __name__ == '__main__':
     app.run()
