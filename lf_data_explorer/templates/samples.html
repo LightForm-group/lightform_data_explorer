@@ -1,26 +1,31 @@
 {% extends "base.html" %}
-{% set active_page = "add_samples" %}
+{% set active_page = "list_samples" %}
 {% block body %}
+    This is the list samples page.
+    <ul>
+    {%  for sample in samples %}
+        <li>{{ sample.sample_name }}</li>
+    {% endfor %}
+    </ul>
+
     <div class="my-3">
-    <h2>Add new Sample</h2>
+        <h2>Add new Sample</h2>
     </div>
 
-    <form action="{{ url_for('add_samples') }}" method="post">
+    <form action="{{ url_for('samples') }}" method="post">
         <div class="form-group my-3">
             <label for="sample_name_box">Sample name</label>
             <input type="text" class="form-control" name="sample_name" id="sample_name_box">
         </div>
         <button type="submit" class="btn btn-primary">Save new sample</button>
-        {% if sample %}
+        {% if new_sample %}
         <div id="result" class="my-3">
-            {% if sample.success == True %}
-                {{ sample.message }}
+            {% if new_sample.success == True %}
+                {{ new_sample.message }}
             {% else %}
-                <div class="fail">{{ sample.message }}</div>
+                <div class="fail">{{ new_sample.message }}</div>
             {% endif %}
         </div>
         {% endif %}
     </form>
-
-
 {%  endblock %}

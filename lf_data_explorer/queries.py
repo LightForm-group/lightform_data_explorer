@@ -23,6 +23,7 @@ def add_new_sample(sample_name: str) -> AddSampleResult:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError as e:
         if e.orig.args[0] == 1062:
+            db.session.rollback()
             return AddSampleResult(False, f"Sample name '{sample_name}' already exists. "
                                           f"Record not added.")
         else:
