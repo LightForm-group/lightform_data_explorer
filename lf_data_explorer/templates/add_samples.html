@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% set active_page = "add_samples" %}
+{% block body %}
+    <div class="my-3">
+    <h2>Add new Sample</h2>
+    </div>
+
+    <form action="{{ url_for('add_samples') }}" method="post">
+        <div class="form-group my-3">
+            <label for="sample_name_box">Sample name</label>
+            <input type="text" class="form-control" name="sample_name" id="sample_name_box">
+        </div>
+        <button type="submit" class="btn btn-primary">Save new sample</button>
+        {% if sample %}
+            New sample: "{{ sample }}" added.
+        {% endif %}
+    </form>
+
+
+{%  endblock %}
