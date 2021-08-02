@@ -1,7 +1,7 @@
 from lf_data_explorer import app
 from flask import render_template, request
 
-from lf_data_explorer.queries import get_all_samples
+from lf_data_explorer.queries import get_all_samples, add_new_sample
 
 
 @app.route('/')
@@ -26,4 +26,5 @@ def add_samples():
         return render_template('add_samples.html')
     else:
         new_name = request.form['sample_name']
-        return render_template('add_samples.html', sample=new_name)
+        result = add_new_sample(new_name)
+        return render_template('add_samples.html', sample=result)
