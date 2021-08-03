@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 import sqlalchemy.exc
 
@@ -8,6 +8,14 @@ from lf_data_explorer.db import Sample, db
 
 def get_all_samples() -> List[Sample]:
     return Sample.query.all()
+
+
+def get_sample_by_name(sample_name: str) -> Optional[Sample]:
+    return Sample.query.filter_by(name=sample_name).first()
+
+
+def get_sample_by_id(sample_id: int) -> Optional[Sample]:
+    return Sample.query.filter_by(id=sample_id).first()
 
 
 @dataclass

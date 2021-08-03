@@ -17,8 +17,8 @@ def setup_db(app: Flask, db_instance: SQLAlchemy):
 
 
 class Sample(db.Model):
-    sample_id = db.Column(db.Integer, primary_key=True)
-    sample_name = db.Column(db.String(80), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
 
     def __repr__(self):
-        return f'<Sample: {self.sample_name}>'
+        return f'<Sample: {self.name}>'
