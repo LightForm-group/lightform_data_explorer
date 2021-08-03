@@ -2,61 +2,29 @@
 {% set active_page = "list_samples" %}
 {% block body %}
     <h2>Sample Management</h2>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="view-samples" data-bs-toggle="tab" data-bs-target="#view" type="button"
-                    role="tab">View Samples
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="add_sample" data-bs-toggle="tab" data-bs-target="#add" type="button"
-                    role="tab">Add New Sample
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="delete_sample" data-bs-toggle="tab" data-bs-target="#delete" type="button"
-                    role="tab">Delete Sample
-            </button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="view" role="tabpanel">
-            <select name="sample_selection" class="form-select my-3" aria-label="Sample selection"
-                    onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                {% for sample in all_samples %}
-                    <option value="{{ url_for('select_sample', sample_id=sample.id) }}">{{ sample.name }}</option>
-                {% endfor %}
-            </select>
-            {% if selected_sample %}
-                <div class="my-3">
-                    You selected sample: {{ selected_sample }}
-                </div>
-            {% endif %}
-        </div>
 
-        <div class="tab-pane fade" id="add" role="tabpanel">
+    <div class="my-3">
+        <select name="sample_selection" class="form-select my-3" aria-label="Sample selection"
+                onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+            {% for sample in all_samples %}
+                <option value="{{ url_for('select_sample', sample_id=sample.id) }}">{{ sample.name }}</option>
+            {% endfor %}
+        </select>
+        {% if selected_sample %}
             <div class="my-3">
-                <h2>Add new Sample</h2>
+                You selected sample: {{ selected_sample }}
             </div>
-
-            <form action="{{ url_for('samples') }}" method="post">
-                <div class="form-group my-3">
-                    <label for="sample_name_box">Sample name</label>
-                    <input type="text" class="form-control" name="sample_name" id="sample_name_box">
-                </div>
-                <button type="submit" class="btn btn-primary">Save new sample</button>
-                {% if new_sample %}
-                    <div id="result" class="my-3">
-                        {% if new_sample.success == True %}
-                            {{ new_sample.message }}
-                        {% else %}
-                            <div class="fail">{{ new_sample.message }}</div>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </form>
-        </div>
-        <div class="tab-pane fade" id="delete" role="tabpanel">This is the delete tab.</div>
+            <div class="my-3">
+                <form method="post">
+                    <input type="submit" class="btn btn-primary" value="Delete this sample">
+                </form>
+            </div>
+        {% endif %}
+        {% if sample_deleted %}
+            <div class="warning my-3">
+                {{ sample_deleted }}
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}

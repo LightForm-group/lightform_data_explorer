@@ -18,6 +18,12 @@ def get_sample_by_id(sample_id: int) -> Optional[Sample]:
     return Sample.query.filter_by(id=sample_id).first()
 
 
+def delete_sample(sample_id: int) -> bool:
+    Sample.query.filter_by(id=sample_id).delete()
+    db.session.commit()
+    return True
+
+
 @dataclass
 class AddSampleResult:
     success: bool
