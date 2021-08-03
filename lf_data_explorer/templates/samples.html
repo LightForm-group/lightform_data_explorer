@@ -1,18 +1,30 @@
 {% extends "base.html" %}
 {% set active_page = "list_samples" %}
 {% block body %}
-    <h2>Sample Management</h2>
-
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Sample Management</h2>
+            </div>
+            <div class="col-2">
+                <a class="btn btn-primary" href="{{ url_for('new_sample') }}" role="button">Add new sample</a>
+            </div>
+        </div>
+    </div>
     <div class="my-3">
         <select name="sample_selection" class="form-select my-3" aria-label="Sample selection"
                 onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+            <option disabled {% if not current_sample %}selected{% endif %} value> -- select a sample -- </option>
             {% for sample in all_samples %}
-                <option value="{{ url_for('select_sample', sample_id=sample.id) }}">{{ sample.name }}</option>
+                <option value="{{ url_for('select_sample', sample_id=sample.id) }}"
+                        {% if current_sample %}
+                            {% if current_sample.name == sample.name %}selected="selected"{% endif %}
+                        {% endif %}>{{ sample.name }}</option>
             {% endfor %}
         </select>
-        {% if selected_sample %}
+        {% if current_sample %}
             <div class="my-3">
-                You selected sample: {{ selected_sample }}
+                You selected sample: {{ current_sample.name }}
             </div>
             <div class="my-3">
                 <form method="post">

@@ -18,10 +18,13 @@ def get_sample_by_id(sample_id: int) -> Optional[Sample]:
     return Sample.query.filter_by(id=sample_id).first()
 
 
-def delete_sample(sample_id: int) -> bool:
+def delete_sample(sample_id: int) -> str:
+    """Delete the sample with `sample_id` from the database.
+    Return the name of the deleted sample."""
+    sample_name = Sample.name
     Sample.query.filter_by(id=sample_id).delete()
     db.session.commit()
-    return True
+    return sample_name
 
 
 @dataclass
@@ -31,7 +34,7 @@ class AddSampleResult:
 
 
 def add_new_sample(sample_name: str) -> AddSampleResult:
-    new_sample = Sample(sample_name=sample_name)
+    new_sample = Sample(name=sample_name)
     db.session.add(new_sample)
     try:
         db.session.commit()

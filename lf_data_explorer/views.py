@@ -14,7 +14,7 @@ def new_sample():
     if request.method == "GET":
         return render_template('add_sample.html')
     else:
-        new_name = request.form['sample_selection']
+        new_name = request.form['sample_name']
         result = queries.add_new_sample(new_name)
         return render_template('add_sample.html', new_sample=result)
 
@@ -28,17 +28,17 @@ def samples():
 
 @app.route('/samples/<sample_id>', methods=['POST', 'GET'])
 def select_sample(sample_id):
-    all_samples = queries.get_all_samples()
     if request.method == "GET":
+        all_samples = queries.get_all_samples()
         selected_sample = queries.get_sample_by_id(sample_id)
-        return render_template('samples.html', all_samples=all_samples, selected_sample=selected_sample)
+        return render_template('samples.html', all_samples=all_samples, current_sample=selected_sample)
     else:
         delete_id = int(request.view_args['sample_id'])
-        result = queries.delete_sample(delete_id)
-        if result:
-            message = "Sample was deleted."
-        else:
-            message = "Sample could not be deleted."
+
+        sample_name = queries.delete_sample(delete_id)
+        message = f"Sample '{sample_name}' was deleted."
+
+        all_samples = queries.get_all_samples()
         return render_template('samples.html', all_samples=all_samples, sample_deleted=message)
 
 
