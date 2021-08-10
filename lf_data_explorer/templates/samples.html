@@ -36,15 +36,23 @@
             <div id="sample_images" class="my-3">
                 <h3>Sample Images</h3>
                 {% if current_sample.images %}
-                    Images of sample:
-                    <ul>
-                        {% for image in current_sample.images %}
-                            <li>{{ image }}</li>
-                        {% endfor %}
-                    </ul>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
+                    <div class="lightbox-gallery">
+                        <div class="row photos">
+                            {% for image in current_sample.images %}
+                                {% set image_link = url_for('static', filename='sample_images/') + image.path %}
+                                <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="{{ image_link }}" data-lightbox="photos"><img class="img-fluid" src="{{ image_link }}"></a></div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
                 {% else %}
                     Sample has no images.
                 {% endif %}
+                <div class="my-3">
+                    <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}" role="button">Add image</a>
+                </div>
             </div>
         {% endif %}
         {% if sample_deleted %}

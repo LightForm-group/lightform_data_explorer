@@ -48,3 +48,11 @@ def add_new_sample(sample_name: str) -> AddRecordResult:
     return AddRecordResult(True, f"Successfully added: '{sample_name}'")
 
 
+def add_new_image(image_path: str, sample_id: int) -> AddRecordResult:
+    new_image = SampleImage(path=image_path, sample_id=sample_id)
+    db.session.add(new_image)
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        return AddRecordResult(False, "Sample not added. Unknown error.")
+    return AddRecordResult(True, f"Successfully added: '{image_path}'")

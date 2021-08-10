@@ -1,14 +1,13 @@
-import yaml
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+
+from lf_data_explorer.utilities import load_config
 
 db = SQLAlchemy()
 
 
 def setup_db(app: Flask, db_instance: SQLAlchemy):
-
-    with open("config.yaml") as config_file:
-        db_config = yaml.safe_load(config_file)["database"]
+    db_config = load_config()["database"]
     username = db_config["username"]
     password = db_config["password"]
 

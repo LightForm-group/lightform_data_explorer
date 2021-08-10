@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set active_page = "about" %}
+{% block body %}
+    <div class="my-3">
+        <h2>Add image for: "{{ sample.name }}"</h2>
+    </div>
+
+    <form action="{{ url_for('add_image', sample_id=sample.id) }}" enctype=multipart/form-data method="post">
+        <div class="form-group my-3">
+            <label for="image_path_box">Sample path</label>
+            <input type="file" class="form-control" name="image_path" id="image_path_box">
+        </div>
+        <div class="my-3">
+            <button type="submit" class="btn btn-primary">Save new image</button>
+        </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="warning my-3">
+                    {% for message in messages %}
+                        Error: {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </form>
+{% endblock %}
