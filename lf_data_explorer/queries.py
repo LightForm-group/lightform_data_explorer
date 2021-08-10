@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import sqlalchemy.exc
 
-from lf_data_explorer.db import Sample, db
+from lf_data_explorer.db import Sample, db, SampleImage
 
 
 def get_all_samples() -> List[Sample]:
@@ -28,12 +28,12 @@ def delete_sample(sample_id: int) -> str:
 
 
 @dataclass
-class AddSampleResult:
+class AddRecordResult:
     success: bool
     message: str
 
 
-def add_new_sample(sample_name: str) -> AddSampleResult:
+def add_new_sample(sample_name: str) -> AddRecordResult:
     new_sample = Sample(name=sample_name)
     db.session.add(new_sample)
     try:
@@ -41,8 +41,10 @@ def add_new_sample(sample_name: str) -> AddSampleResult:
     except sqlalchemy.exc.IntegrityError as e:
         if e.orig.args[0] == 1062:
             db.session.rollback()
-            return AddSampleResult(False, f"Sample name '{sample_name}' already exists. "
+            return AddRecordResult(False, f"Sample name '{sample_name}' already exists. "
                                           f"Record not added.")
         else:
-            return AddSampleResult(False, "Sample not added. Unknown error.")
-    return AddSampleResult(True, f"Successfully added: '{sample_name}'")
+            return AddRecordResult(False, "Sample not added. Unknown error.")
+    return AddRecordResult(True, f"Successfully added: '{sample_name}'")
+
+

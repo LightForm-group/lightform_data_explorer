@@ -19,6 +19,16 @@ def setup_db(app: Flask, db_instance: SQLAlchemy):
 class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    images = db.relationship('SampleImage', backref='sample', lazy=True)
 
     def __repr__(self):
         return f'<Sample: {self.name}>'
+
+
+class SampleImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(1000), nullable=False)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Image: {self.path}>'

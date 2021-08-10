@@ -31,7 +31,8 @@ def select_sample(sample_id):
     if request.method == "GET":
         all_samples = queries.get_all_samples()
         selected_sample = queries.get_sample_by_id(sample_id)
-        return render_template('samples.html', all_samples=all_samples, current_sample=selected_sample)
+        return render_template('samples.html', all_samples=all_samples,
+                               current_sample=selected_sample)
     else:
         delete_id = int(request.view_args['sample_id'])
 
