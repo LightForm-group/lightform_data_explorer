@@ -21,6 +21,7 @@
 <div class="container">
 
     {% set navigation_bar = [('/', 'index', 'Home'), ('samples', 'samples', 'Samples'),
+                             ('experiments', 'experiments', "Experiments"),
                              ('about', 'about', 'About')] -%}
 
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
@@ -32,7 +33,7 @@
         <ul class="nav nav-pills">
 
             {% for href, id, caption in navigation_bar %}
-                <li class="nav-item"><a href="{{ href|e }}"
+                <li class="nav-item"><a href="{{ url_for(id) }}"
                                         class="nav-link{% if id == active_page %} active{% endif %}">{{ caption|e }}</a>
                 </li>
             {% endfor %}
@@ -45,11 +46,6 @@
     {% endblock %}
 </div>
 
-<div class="container">
-    <footer class="footer">
-        <p>This is a footer</p>
-    </footer>
-</div>
 </body>
 
 </html>

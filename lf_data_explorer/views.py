@@ -14,6 +14,22 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/experiments')
+def experiments():
+    all_experiments = queries.get_all_experiments()
+    return render_template("experiments.html", experiments=all_experiments)
+
+
+@app.route('/experiments/manage', methods=['POST', 'GET'])
+def experiment_management():
+    if request.method == "GET":
+        return render_template('experiment_management.html')
+    else:
+        new_name = request.form['experiment_name']
+        result = queries.add_new_experiment(new_name)
+        return render_template('experiment_management.html', new_experient=result)
+
+
 @app.route('/samples/new', methods=['POST', 'GET'])
 def new_sample():
     if request.method == "GET":

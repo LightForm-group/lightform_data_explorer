@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% set active_page = "experiments" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Experiments</h2>
+            </div>
+            <div class="col-2">
+                <a class="btn btn-primary" href="{{ url_for('experiment_management') }}" role="button">Edit experiments</a>
+            </div>
+        </div>
+    </div>
+    <div class="my-3">
+        {% if experiments %}
+            {% for experiment in experiments %}
+                <div class="my-3">
+                    <h2>{{ experiment.name }}</h2>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+{% endblock %}

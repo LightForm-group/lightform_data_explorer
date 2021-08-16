@@ -31,3 +31,21 @@ class SampleImage(db.Model):
 
     def __repr__(self):
         return f'<Image: {self.path}>'
+
+
+class Experiment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f'<Experiment: {self.name}>'
+
+
+class Measurement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id'), nullable=False)
+    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.id'), nullable=False)
+    url = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f'<Measurement: {self.url}>'

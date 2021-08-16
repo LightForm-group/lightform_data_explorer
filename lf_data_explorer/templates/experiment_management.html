@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set active_page = "experiment_management" %}
+{% block body %}
+    <div class="my-3">
+        <h2>Experiment management</h2>
+    </div>
+
+    <h4>Add experiment</h4>
+    <form class="row" action="{{ url_for('experiment_management') }}" method="post">
+        <div class="col">
+            <label for="experiment_name_box">Experiment name</label>
+            <input type="text" class="form-control" name="experiment_name" id="experiment_name_box">
+        </div>
+        <div class="col my-3">
+            <button type="submit" class="btn btn-primary">Save new experiment</button>
+        </div>
+    </form>
+    {% if new_experiment %}
+        <div id="result" class="my-3">
+            {% if new_experiment.success == True %}
+                {{ new_experiment.message }}
+            {% else %}
+                <div class="warning">{{ new_experiment.message }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -3,11 +3,15 @@ from typing import List, Optional
 
 import sqlalchemy.exc
 
-from lf_data_explorer.db import Sample, db, SampleImage
+from lf_data_explorer.db import Sample, db, SampleImage, Experiment
 
 
 def get_all_samples() -> List[Sample]:
     return Sample.query.all()
+
+
+def get_all_experiments() -> List[Experiment]:
+    return Experiment.query.all()
 
 
 def get_sample_by_name(sample_name: str) -> Optional[Sample]:
@@ -56,3 +60,13 @@ def add_new_image(image_path: str, sample_id: int) -> AddRecordResult:
     except sqlalchemy.exc.IntegrityError as e:
         return AddRecordResult(False, "Sample not added. Unknown error.")
     return AddRecordResult(True, f"Successfully added: '{image_path}'")
+
+
+def add_new_experiment(experiment_name: str):
+    new_experiment = Experiment(name=experiment_name)
+    db.session.add(new_experiment)
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        return AddRecordResult(False, "Sample not added. Unknown error.")
+    return AddRecordResult(True, f"Successfully added: '{experiment_name}'")
