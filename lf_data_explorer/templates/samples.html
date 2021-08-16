@@ -4,10 +4,10 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h2>Sample Management</h2>
+                <h2>Samples</h2>
             </div>
             <div class="col-2">
-                <a class="btn btn-primary" href="{{ url_for('new_sample') }}" role="button">Add new sample</a>
+                <a class="btn btn-primary" href="{{ url_for('sample_management') }}" role="button">Sample Management</a>
             </div>
         </div>
     </div>
@@ -27,11 +27,6 @@
                 <h3>Sample Details</h3>
                 Sample Name: {{ current_sample.name }}<br>
                 Sample id: {{ current_sample.id }}.<br>
-                <div id="delete_sample_button" class="my-3">
-                    <form method="post">
-                        <input type="submit" class="btn btn-primary" value="Delete this sample">
-                    </form>
-                </div>
             </div>
             <div id="sample_images" class="my-3">
                 <h3>Sample Images</h3>
@@ -53,11 +48,6 @@
                 <div class="my-3">
                     <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}" role="button">Add image</a>
                 </div>
-            </div>
-        {% endif %}
-        {% if sample_deleted %}
-            <div class="warning my-3">
-                {{ sample_deleted }}
             </div>
         {% endif %}
     </div>

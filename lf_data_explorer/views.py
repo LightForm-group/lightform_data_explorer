@@ -27,17 +27,39 @@ def experiment_management():
     else:
         new_name = request.form['experiment_name']
         result = queries.add_new_experiment(new_name)
-        return render_template('experiment_management.html', new_experient=result)
+        flash(result)
+        return render_template('experiment_management.html')
 
 
-@app.route('/samples/new', methods=['POST', 'GET'])
-def new_sample():
+@app.route('/samples/manage', methods=['POST', 'GET'])
+def sample_management():
     if request.method == "GET":
-        return render_template('add_sample.html')
+        all_samples = queries.get_all_samples()
+        return render_template('sample_management.html', all_samples=all_samples)
     else:
-        new_name = request.form['sample_name']
-        result = queries.add_new_sample(new_name)
-        return render_template('add_sample.html', new_sample=result)
+        form_button = request.form["submit"]
+        if form_button == "add":
+            new_name = request.form['sample_name']
+            result = queries.add_new_sample(new_name)
+            flash(result)
+            all_samples = queries.get_all_samples()
+            return render_template('sample_management.html', all_samples=all_samples)
+        elif form_button == "rename":
+            sample_id = int(request.form["sample_selection"])
+            new_sample_name = request.form["new_sample_name"]
+            result = queries.rename_sample(sample_id, new_sample_name)
+            flash(result)
+            all_samples = queries.get_all_samples()
+            return render_template('sample_management.html', all_samples=all_samples)
+
+        elif form_button == "delete":
+            sample_id = int(request.form["sample_selection"])
+
+            result = queries.delete_sample(sample_id)
+            flash(result)
+
+            all_samples = queries.get_all_samples()
+            return render_template('sample_management.html', all_samples=all_samples)
 
 
 @app.route('/samples', methods=['POST', 'GET'], strict_slashes=False)
@@ -54,14 +76,6 @@ def select_sample(sample_id: int):
         selected_sample = queries.get_sample_by_id(sample_id)
         return render_template('samples.html', all_samples=all_samples,
                                current_sample=selected_sample)
-    else:
-        delete_id = int(request.view_args['sample_id'])
-
-        sample_name = queries.delete_sample(delete_id)
-        message = f"Sample '{sample_name}' was deleted."
-
-        all_samples = queries.get_all_samples()
-        return render_template('samples.html', all_samples=all_samples, sample_deleted=message)
 
 
 @app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])

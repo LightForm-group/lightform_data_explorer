@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set active_page = "sample_management" %}
+{% block body %}
+    <div class="my-3">
+        <h2>Sample Management</h2>
+    </div>
+
+    <form class="row my-4" action="{{ url_for('sample_management') }}" method="post">
+        <h4>Add sample</h4>
+        <div class="col">
+            <label for="sample_name_box">Sample name</label>
+            <input type="text" class="form-control" name="sample_name" id="sample_name_box">
+        </div>
+        <div class="col my-3">
+            <button type="submit" class="btn btn-primary" name="submit" value="add">Save new sample</button>
+        </div>
+    </form>
+
+    <form class="row my-4" action="{{ url_for('sample_management') }}" method="post">
+        <h4>Rename sample</h4>
+        <div class="col">
+            <select name="sample_selection" class="form-select my-3" aria-label="Select sample to rename">
+                <option disabled selected> -- select a sample --</option>
+                {% for sample in all_samples %}
+                    <option value="{{ sample.id }}">{{ sample.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <label for="new_sample_name_box">New sample name</label>
+            <input type="text" class="form-control" name="new_sample_name" id="new_sample_name_box">
+        </div>
+        <div class="col my-3">
+            <button type="submit" class="btn btn-primary"  name="submit" value="rename">Rename sample</button>
+        </div>
+    </form>
+
+    <form class="row my-4" action="{{ url_for('sample_management') }}" method="post">
+        <h4>Delete sample</h4>
+        <div class="col">
+            <select name="sample_selection" class="form-select my-3" aria-label="Select sample to delete">
+                <option disabled selected>-- select a sample --</option>
+                {% for sample in all_samples %}
+                    <option value="{{ sample.id }}">{{ sample.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col my-4">
+            <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete sample</button>
+        </div>
+    </form>
+
+{% endblock %}
