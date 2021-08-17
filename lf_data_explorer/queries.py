@@ -30,6 +30,14 @@ def delete_sample(sample_id: int) -> str:
     return f"Sample '{sample_name}' successfully deleted."
 
 
+def delete_experiment(experiment_id: int) -> str:
+    """Delete the experiment with `experiment_id` from the database."""
+    experiment_name = Experiment.query.filter_by(id=experiment_id).first().name
+    Experiment.query.filter_by(id=experiment_id).delete()
+    db.session.commit()
+    return f"Sample '{experiment_name}' successfully deleted."
+
+
 def add_new_sample(sample_name: str) -> str:
     new_sample = Sample(name=sample_name)
     db.session.add(new_sample)
@@ -70,3 +78,11 @@ def rename_sample(sample_id: int, new_sample_name: str) -> str:
     sample.name = new_sample_name
     db.session.commit()
     return f"Sample '{old_name}' renamed to '{new_sample_name}'"
+
+
+def rename_experiment(sample_id: int, new_experiment_name: str) -> str:
+    experiment = Experiment.query.filter_by(id=sample_id).first()
+    old_name = experiment.name
+    experiment.name = new_experiment_name
+    db.session.commit()
+    return f"Experiment '{old_name}' renamed to '{new_experiment_name}'"

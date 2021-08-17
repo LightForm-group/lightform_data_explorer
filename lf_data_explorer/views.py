@@ -20,17 +20,6 @@ def experiments():
     return render_template("experiments.html", experiments=all_experiments)
 
 
-@app.route('/experiments/manage', methods=['POST', 'GET'])
-def experiment_management():
-    if request.method == "GET":
-        return render_template('experiment_management.html')
-    else:
-        new_name = request.form['experiment_name']
-        result = queries.add_new_experiment(new_name)
-        flash(result)
-        return render_template('experiment_management.html')
-
-
 @app.route('/samples/manage', methods=['POST', 'GET'])
 def sample_management():
     if request.method == "GET":
@@ -60,6 +49,37 @@ def sample_management():
 
             all_samples = queries.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)
+
+
+@app.route('/experiments/manage', methods=['POST', 'GET'])
+def experiment_management():
+    if request.method == "GET":
+        all_experiments = queries.get_all_experiments()
+        return render_template('experiment_management.html', all_experiments=all_experiments)
+    else:
+        form_button = request.form["submit"]
+        if form_button == "add":
+            new_name = request.form['experiment_name']
+            result = queries.add_new_experiment(new_name)
+            flash(result)
+            all_experiments = queries.get_all_experiments()
+            return render_template('experiment_management.html', all_experiments=all_experiments)
+        elif form_button == "rename":
+            experiment_id = int(request.form["experiment_selection"])
+            new_experiment_name = request.form["new_experiment_name"]
+            result = queries.rename_experiment(experiment_id, new_experiment_name)
+            flash(result)
+            all_experiments = queries.get_all_experiments()
+            return render_template('experiment_management.html', all_experiments=all_experiments)
+
+        elif form_button == "delete":
+            experiment_id = int(request.form["sample_selection"])
+
+            result = queries.delete_experiment(experiment_id)
+            flash(result)
+
+            all_experiments = queries.get_all_experiments()
+            return render_template('experiment_management.html', all_experiments=all_experiments)
 
 
 @app.route('/samples', methods=['POST', 'GET'], strict_slashes=False)
