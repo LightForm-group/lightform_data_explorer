@@ -19,10 +19,10 @@
             {% for experiment in experiments %}
                 <div class="my-3">
                     <h2>{{ experiment.name }}</h2>
-                    {% if experiment.measurments %}
+                    {% if experiment.measurements %}
                         <ul>
-                        {% for measurment in experiment.measurements %}
-                            <li>{{ measurment }}</li>
+                        {% for measurement in experiment.measurements %}
+                            <li>{{ measurement | safe }}</li>
                         {%  endfor %}
                         </ul>
                     {% endif %}

@@ -19,9 +19,10 @@ class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     images = db.relationship('SampleImage', backref='sample', lazy=True)
+    measurements = db.relationship('Measurement', backref='sample', lazy=True)
 
     def __repr__(self):
-        return f'<Sample: {self.name}>'
+        return f'Sample: {self.name}'
 
 
 class SampleImage(db.Model):
@@ -30,15 +31,16 @@ class SampleImage(db.Model):
     sample_id = db.Column(db.Integer, db.ForeignKey('sample.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Image: {self.path}>'
+        return f'Image: {self.path}'
 
 
 class Experiment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
+    measurements = db.relationship('Measurement', backref='experiment', lazy=True)
 
     def __repr__(self):
-        return f'<Experiment: {self.name}>'
+        return f'Experiment: {self.name}'
 
 
 class Measurement(db.Model):
@@ -48,4 +50,4 @@ class Measurement(db.Model):
     url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
-        return f'<Measurement: {self.url}>'
+        return f'Measurement: {self.url}</a>'

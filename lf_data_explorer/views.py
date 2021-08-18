@@ -17,7 +17,8 @@ def index():
 @app.route('/experiments')
 def experiments():
     all_experiments = queries.get_all_experiments()
-    return render_template("experiments.html", experiments=all_experiments)
+    all_samples = queries.get_all_samples()
+    return render_template("experiments.html", experiments=all_experiments, all_samples=all_samples)
 
 
 @app.route('/samples/manage', methods=['POST', 'GET'])
@@ -82,7 +83,7 @@ def experiment_management():
             return render_template('experiment_management.html', all_experiments=all_experiments)
 
 
-@app.route('/measurments/manage', methods=['POST', 'GET'])
+@app.route('/measurements/manage', methods=['POST', 'GET'])
 def measurement_management():
     if request.method == "GET":
         all_experiments = queries.get_all_experiments()

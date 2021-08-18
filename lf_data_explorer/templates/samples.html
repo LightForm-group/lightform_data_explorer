@@ -49,6 +49,16 @@
                     <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}" role="button">Add image</a>
                 </div>
             </div>
+            <div id="sample_experiments" class="my-3">
+                <h3>Measurements</h3>
+                {% if measurment in current_sample.measurements %}
+                    {% for measurement in current_sample.measurements %}
+                        {{ measurement.experiment }} - {{ measurement.url | urlize }}
+                    {% endfor %}
+                {% else %}
+                    Sample has no measurements.
+                {% endif %}
+            </div>
         {% endif %}
     </div>
 
