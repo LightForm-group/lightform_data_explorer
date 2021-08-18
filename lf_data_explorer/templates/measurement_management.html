@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% set active_page = "experiment_management" %}
+{% block body %}
+    <div class="my-3">
+        <h2>Measurement Management</h2>
+    </div>
+
+    <form class="my-4" action="{{ url_for('measurement_management') }}" method="post">
+        <h4>Add measurement</h4>
+        <div class="row">
+            <div class="col">
+                <label for="measurement_name_box">Select a sample</label>
+                <select name="sample_selection" class="form-select my-3" aria-label="Select sample to add measurement">
+                    <option disabled selected> -- Select sample to add measurement --</option>
+                    {% for sample in all_samples %}
+                        <option value="{{ sample.id }}">{{ sample.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="experiment_name_box">Select an experiment</label>
+                <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to add measurement">
+                    <option disabled selected> -- select experiment to add measurement --</option>
+                    {% for experiment in all_experiments %}
+                        <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="url_box">Add a url</label>
+                <input type="text" class="form-control" name="url" id="url_box">
+            </div>
+            <div class="col my-3">
+                <button type="submit" class="btn btn-primary" name="submit" value="add">Save new measurement</button>
+            </div>
+        </div>
+    </form>
+
+    {#<form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
+        <h4>Rename experiment</h4>
+        <div class="col">
+            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to rename">
+                <option disabled selected> -- select a experiment --</option>
+                {% for experiment in all_experiments %}
+                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <label for="new_experiment_name_box">New experiment name</label>
+            <input type="text" class="form-control" name="new_experiment_name" id="new_experiment_name_box">
+        </div>
+        <div class="col my-3">
+            <button type="submit" class="btn btn-primary"  name="submit" value="rename">Rename experiment</button>
+        </div>
+    </form>
+
+    <form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
+        <h4>Delete experiment</h4>
+        <div class="col">
+            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to delete">
+                <option disabled selected>-- select a experiment --</option>
+                {% for experiment in all_experiments %}
+                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col my-4">
+            <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete experiment</button>
+        </div>
+    </form>
+#}
+{% endblock %}

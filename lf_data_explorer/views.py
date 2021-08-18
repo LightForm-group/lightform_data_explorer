@@ -82,6 +82,27 @@ def experiment_management():
             return render_template('experiment_management.html', all_experiments=all_experiments)
 
 
+@app.route('/measurments/manage', methods=['POST', 'GET'])
+def measurement_management():
+    if request.method == "GET":
+        all_experiments = queries.get_all_experiments()
+        all_samples = queries.get_all_samples()
+        return render_template('measurement_management.html', all_experiments=all_experiments,
+                               all_samples=all_samples)
+    else:
+        form_button = request.form["submit"]
+        if form_button == "add":
+            sample_id = int(request.form['sample_selection'])
+            experiment_id = int(request.form['experiment_selection'])
+            url = request.form["url"]
+            result = queries.add_measurement(sample_id, experiment_id, url)
+            flash(result)
+            all_experiments = queries.get_all_experiments()
+            all_samples = queries.get_all_samples()
+            return render_template('experiment_management.html', all_experiments=all_experiments,
+                                   all_samples=all_samples)
+
+
 @app.route('/samples', methods=['POST', 'GET'], strict_slashes=False)
 def samples():
     all_samples = queries.get_all_samples()

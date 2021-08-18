@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import sqlalchemy.exc
 
-from lf_data_explorer.db import Sample, db, SampleImage, Experiment
+from lf_data_explorer.db import Sample, db, SampleImage, Experiment, Measurement
 
 
 def get_all_samples() -> List[Sample]:
@@ -86,3 +86,12 @@ def rename_experiment(sample_id: int, new_experiment_name: str) -> str:
     experiment.name = new_experiment_name
     db.session.commit()
     return f"Experiment '{old_name}' renamed to '{new_experiment_name}'"
+
+
+def add_measurement(sample_id: int, experiment_id: int, url: str) -> str:
+    sample = Sample.query.filter_by(id=sample_id).first()
+    experiment = Experiment.query.filter_by(id=experiment_id).first()
+    new_measurement = Measurement(sample_id=sample_id, experiment_id=experiment_id, url=url)
+    db.session.add(new_measurement)
+    db.session.commit()
+    return f"Measurement added for experiment '{experiment.name}' on sample '{sample.name}."
