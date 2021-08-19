@@ -1,24 +1,22 @@
 {% extends "base.html" %}
 {% set active_page = "samples" %}
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h2>Samples</h2>
-            </div>
-            <div class="col-2">
-                <a class="btn btn-primary" href="{{ url_for('sample_management') }}" role="button">Sample Management</a>
-            </div>
+    <div class="row">
+        <div class="col">
+            <h2>Samples</h2>
+        </div>
+        <div class="col-2">
+            <a class="btn btn-primary" href="{{ url_for('sample_management') }}" role="button">Sample Management</a>
         </div>
     </div>
     <div class="my-3">
         <select name="sample_selection" class="form-select my-3" aria-label="Sample selection"
                 onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-            <option disabled {% if not current_sample %}selected{% endif %} value> -- select a sample -- </option>
+            <option disabled {% if not current_sample %}selected{% endif %} value> -- select a sample --</option>
             {% for sample in all_samples %}
                 <option value="{{ url_for('select_sample', sample_id=sample.id) }}"
                         {% if current_sample %}
-                            {% if current_sample.name == sample.name %}selected="selected"{% endif %}
+                        {% if current_sample.name == sample.name %}selected="selected"{% endif %}
                         {% endif %}>{{ sample.name }}</option>
             {% endfor %}
         </select>
@@ -28,30 +26,36 @@
                 Sample Name: {{ current_sample.name }}<br>
                 Sample id: {{ current_sample.id }}.<br>
             </div>
-            <div id="sample_images" class="my-3">
-                <h3>Sample Images</h3>
-                {% if current_sample.images %}
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css">
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
-                    <div class="lightbox-gallery">
-                        <div class="row photos">
-                            {% for image in current_sample.images %}
-                                {% set image_link = url_for('static', filename='sample_images/') + image.path %}
-                                <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="{{ image_link }}" data-lightbox="photos"><img class="img-fluid" src="{{ image_link }}"></a></div>
-                            {% endfor %}
-
-                        </div>
-                    </div>
-                {% else %}
-                    Sample has no images.
-                {% endif %}
-                <div class="my-3">
-                    <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}" role="button">Add image</a>
+            <div id="sample_images" class="row my-4">
+                <div class="col-2">
+                    <h3>Sample Images</h3>
+                </div>
+                <div class="col">
+                    <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}"
+                       role="button"><i class="bi-plus-circle me-2"></i>Add new image</a>
                 </div>
             </div>
-            <div id="sample_experiments" class="my-3">
+            {% if current_sample.images %}
+                <link rel="stylesheet"
+                      href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
+                <div class="lightbox-gallery">
+                    <div class="row photos">
+                        {% for image in current_sample.images %}
+                            {% set image_link = url_for('static', filename='sample_images/') + image.path %}
+                            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="{{ image_link }}"
+                                                                            data-lightbox="photos"><img
+                                    class="img-fluid" src="{{ image_link }}"></a></div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            {% else %}
+                Sample has no images.
+            {% endif %}
+            <div id="sample_experiments" class="my-4">
                 <h3>Measurements</h3>
-                {% if measurment in current_sample.measurements %}
+                {% if current_sample.measurements %}
                     {% for measurement in current_sample.measurements %}
                         {{ measurement.experiment }} - {{ measurement.url | urlize }}
                     {% endfor %}
