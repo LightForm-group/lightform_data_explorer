@@ -11,7 +11,8 @@ from lf_data_explorer.utilities import allowed_file
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    all_samples = queries.get_all_samples()
+    return render_template("index.html", all_samples=all_samples)
 
 
 @app.route('/experiments')

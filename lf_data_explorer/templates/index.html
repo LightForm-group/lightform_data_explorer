@@ -1,5 +1,56 @@
-{%  extends "base.html" %}
+{% extends "base.html" %}
 {% set active_page = "index" %}
-{%  block body %}
+{% block body %}
     This is the home page.
-{%  endblock %}
+
+    <div id="graph-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
+    <script>
+        var cy = cytoscape({
+
+            container: document.getElementById('graph-container'), // container to render in
+
+            elements: [
+                {% for sample in all_samples -%}
+                    {data: {id: '{{ sample.name }}'}},
+                {% endfor %}
+                {% for sample in all_samples -%}
+                    {% for child in sample.children -%}
+                        {data: {id: '{{ sample.name }}-{{ child.name }}', source: '{{ sample.name }}', target: '{{ child.name }}'}},
+                    {% endfor %}
+                {% endfor %}
+            ],
+
+            style: [ // the stylesheet for the graph
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#666',
+                        'label': 'data(id)'
+                    }
+                },
+
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier'
+                    }
+                }
+            ],
+
+				layout: {
+				    name: 'breadthfirst',
+				    directed: true,
+				    padding: 10,
+				   /* color: "#ffff00",*/
+				    fit: true
+				}
+
+        });
+    </script>
+
+{% endblock %}
