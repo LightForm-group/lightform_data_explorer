@@ -53,16 +53,32 @@
             {% else %}
                 Sample has no images.
             {% endif %}
-            <div id="subsamples" class="row my-4">
+            <div id="subsamples" class="row mt-4">
                 <div class="col">
                     <h3>Sample relationships</h3>
                 </div>
             </div>
-            {% if current_sample.parent_sample %}
-                Sample is derived from sample: '<a href="{{ url_for('select_sample', sample_id=current_sample.parent.id) }}">{{ current_sample.parent.name }}</a>'
-            {% else %}
-                Sample is not derived from another sample.
-            {% endif %}
+            <div id="parent_samples" class="my-3">
+                <h4>Parent samples</h4>
+                {% if current_sample.parent_sample %}
+                    Sample is derived from sample: <a href="{{ url_for('select_sample', sample_id=current_sample.parent.id) }}">{{ current_sample.parent.name }}</a>
+                {% else %}
+                    Sample is not derived from another sample.
+                {% endif %}
+            </div>
+            <div id="child_samples" class="my-3">
+                <h4>Child samples</h4>
+                {% if current_sample.children %}
+                    Sample has these child samples:
+                    <ul>
+                        {% for child in current_sample.children %}
+                            <li><a href="{{ url_for('select_sample', sample_id=child.id) }}">{{ child.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    Sample has no child samples.
+                {% endif %}
+            </div>
             <div id="sample_experiments" class="my-4">
                 <h3>Measurements</h3>
                 {% if current_sample.measurements %}

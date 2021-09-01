@@ -21,7 +21,7 @@ class Sample(db.Model):
     parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id'))
     images = db.relationship('SampleImage', backref='sample', lazy=True)
     measurements = db.relationship('Measurement', backref='sample', lazy=True)
-    parent = db.relationship('Sample', backref = 'children', remote_side='Sample.id', lazy=True)
+    parent = db.relationship('Sample', backref='children', remote_side='Sample.id', lazy=True)
 
     def __repr__(self):
         return f'Sample: {self.name}'
