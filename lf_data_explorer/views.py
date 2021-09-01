@@ -37,7 +37,10 @@ def sample_management():
         elif form_button == "rename":
             sample_id = int(request.form["sample_selection"])
             new_sample_name = request.form["new_sample_name"]
-            result = queries.rename_sample(sample_id, new_sample_name)
+            if not new_sample_name:
+                new_sample_name = queries.get_sample_by_id(sample_id).name
+            parent_sample = int(request.form["parent_selection"])
+            result = queries.edit_sample(sample_id, new_sample_name, parent_sample)
             flash(result)
             all_samples = queries.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)

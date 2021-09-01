@@ -17,21 +17,33 @@
     </form>
 
     <form class="row my-4" action="{{ url_for('sample_management') }}" method="post">
-        <h4>Rename sample</h4>
+        <h4>Edit sample</h4>
         <div class="col">
-            <select name="sample_selection" class="form-select my-3" aria-label="Select sample to rename">
+            <select name="sample_selection" class="form-select my-3" aria-label="Select sample to edit">
                 <option disabled selected> -- select a sample --</option>
                 {% for sample in all_samples %}
                     <option value="{{ sample.id }}">{{ sample.name }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col">
-            <label for="new_sample_name_box">New sample name</label>
-            <input type="text" class="form-control" name="new_sample_name" id="new_sample_name_box">
-        </div>
-        <div class="col my-3">
-            <button type="submit" class="btn btn-primary"  name="submit" value="rename">Rename sample</button>
+        <div class="row">
+            <div class="col">
+                <label for="new_sample_name_box">New sample name</label><br>
+                <input type="text" class="form-control my-2" name="new_sample_name" id="new_sample_name_box">
+            </div>
+            <div class="col">
+                <label for="new_parent_select">New parent</label>
+                <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent">
+                    <option disabled selected> -- select a sample --</option>
+                    {% for sample in all_samples %}
+                        <option value="{{ sample.id }}">{{ sample.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col my-3 d-flex">
+                <button type="submit" class="btn btn-primary align-self-end"  name="submit" value="rename">Save changes</button>
+            </div>
         </div>
     </form>
 

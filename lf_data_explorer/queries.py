@@ -49,7 +49,7 @@ def add_new_sample(sample_name: str) -> str:
             return f"Sample name '{sample_name}' already exists. Record not added."
         else:
             return "Sample not added. Unknown error."
-    return f"Successfully added new sample: '{sample_name}'"
+    return f"Successfully added new sample: '{sample_name}'."
 
 
 def add_new_image(image_path: str, sample_id: int) -> str:
@@ -59,7 +59,7 @@ def add_new_image(image_path: str, sample_id: int) -> str:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError as e:
         return "Sample not added. Unknown error."
-    return f"Successfully added: '{image_path}'"
+    return f"Successfully added: '{image_path}'."
 
 
 def add_new_experiment(experiment_name: str) -> str:
@@ -69,15 +69,17 @@ def add_new_experiment(experiment_name: str) -> str:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError as e:
         return "Sample not added. Unknown error."
-    return f"Successfully added: '{experiment_name}'"
+    return f"Successfully added: '{experiment_name}.'"
 
 
-def rename_sample(sample_id: int, new_sample_name: str) -> str:
+def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int]) -> str:
     sample = Sample.query.filter_by(id=sample_id).first()
     old_name = sample.name
     sample.name = new_sample_name
+    sample.parent_sample = new_parent
+
     db.session.commit()
-    return f"Sample '{old_name}' renamed to '{new_sample_name}'"
+    return f"Sample '{old_name}' record updated."
 
 
 def rename_experiment(sample_id: int, new_experiment_name: str) -> str:
@@ -85,7 +87,7 @@ def rename_experiment(sample_id: int, new_experiment_name: str) -> str:
     old_name = experiment.name
     experiment.name = new_experiment_name
     db.session.commit()
-    return f"Experiment '{old_name}' renamed to '{new_experiment_name}'"
+    return f"Experiment '{old_name}' renamed to '{new_experiment_name}.'"
 
 
 def add_measurement(sample_id: int, experiment_id: int, url: str) -> str:
