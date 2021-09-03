@@ -82,9 +82,11 @@
             <div id="sample_experiments" class="my-4">
                 <h3>Measurements</h3>
                 {% if current_sample.measurements %}
+                    <ul>
                     {% for measurement in current_sample.measurements %}
-                        {{ measurement.experiment }} - {{ measurement.url | urlize }}
+                        <li>{{ measurement.experiment }} - {{ measurement.url | urlize }}</li>
                     {% endfor %}
+                    </ul>
                 {% else %}
                     Sample has no measurements.
                 {% endif %}

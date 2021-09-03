@@ -41,6 +41,8 @@ def sample_management():
             if not new_sample_name:
                 new_sample_name = queries.get_sample_by_id(sample_id).name
             parent_sample = int(request.form["parent_selection"])
+            if parent_sample == -1:
+                parent_sample = None
             result = queries.edit_sample(sample_id, new_sample_name, parent_sample)
             flash(result)
             all_samples = queries.get_all_samples()
