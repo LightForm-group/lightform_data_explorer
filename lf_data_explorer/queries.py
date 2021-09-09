@@ -38,8 +38,10 @@ def delete_experiment(experiment_id: int) -> str:
     return f"Sample '{experiment_name}' successfully deleted."
 
 
-def add_new_sample(sample_name: str) -> str:
-    new_sample = Sample(name=sample_name)
+def add_new_sample(sample_name: str, parent: int) -> str:
+    if parent == -1:
+        parent = None
+    new_sample = Sample(name=sample_name, parent_sample=parent)
     db.session.add(new_sample)
     try:
         db.session.commit()

@@ -9,7 +9,16 @@
         <h4>Add sample</h4>
         <div class="col">
             <label for="sample_name_box">Sample name</label>
-            <input type="text" class="form-control" name="sample_name" id="sample_name_box">
+            <input type="text" class="form-control my-2" name="sample_name" id="sample_name_box">
+        </div>
+        <div class="col">
+            <label for="new_parent_select">Sample parent</label>
+            <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent">
+                <option selected value="-1">None</option>
+                {% for sample in all_samples %}
+                    <option value="{{ sample.id }}">{{ sample.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col my-3">
             <button type="submit" class="btn btn-primary" name="submit" value="add">Save new sample</button>

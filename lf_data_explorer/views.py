@@ -31,7 +31,8 @@ def sample_management():
         form_button = request.form["submit"]
         if form_button == "add":
             new_name = request.form['sample_name']
-            result = queries.add_new_sample(new_name)
+            parent = int(request.form['parent_selection'])
+            result = queries.add_new_sample(new_name, parent)
             flash(result)
             all_samples = queries.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)
@@ -78,10 +79,8 @@ def experiment_management():
             flash(result)
             all_experiments = queries.get_all_experiments()
             return render_template('experiment_management.html', all_experiments=all_experiments)
-
         elif form_button == "delete":
-            experiment_id = int(request.form["sample_selection"])
-
+            experiment_id = int(request.form["experiment_selection"])
             result = queries.delete_experiment(experiment_id)
             flash(result)
 
