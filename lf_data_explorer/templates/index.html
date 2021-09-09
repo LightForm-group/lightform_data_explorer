@@ -12,11 +12,12 @@
 
             elements: [
                 {% for sample in all_samples -%}
-                    {data: {id: '{{ sample.name }}'}},
+                    {data: {id: '{{ sample.name }}', href: '{{ url_for('select_sample', sample_id=sample.id )}}'}},
                 {% endfor %}
                 {% for sample in all_samples -%}
                     {% for child in sample.children -%}
-                        {data: {id: '{{ sample.name }}-{{ child.name }}', source: '{{ sample.name }}', target: '{{ child.name }}'}},
+                        {data: {id: '{{ sample.name }}-{{ child.name }}', source: '{{ sample.name }}',
+                                target: '{{ child.name }}'}},
                     {% endfor %}
                 {% endfor %}
             ],
@@ -50,6 +51,10 @@
 				    fit: true
 				}
 
+        });
+
+        cy.on('tap', 'node', function () {
+            window.location.href = this.data('href');
         });
     </script>
 
