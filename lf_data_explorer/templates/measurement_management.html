@@ -76,7 +76,6 @@
 
             // Request the measurements from the server
             request_measurement_list(e.target.value)
-
         }
 
         function request_measurement_list(sample_id) {
@@ -91,21 +90,16 @@
                     let measurement_select = document.querySelectorAll('#delete_measurement_selection')[0];
                     measurement_select.disabled = false
 
-                    let experiments = JSON.parse(this.response);
+                    let measurements = JSON.parse(this.response);
 
-                    for (let key of Object.keys(experiments)) {
+                    for (let key of Object.keys(measurements)) {
                         let opt = document.createElement("option");
                         opt.value = key;
-                        opt.text = experiments[key]["url"];
+                        opt.text = measurements[key]["url"];
                         measurement_select.add(opt);
                     }
-
-
-                } else {
-                    // We reached our target server, but it returned an error
                 }
             };
-
             request.send(sample_id);
         }
     </script>

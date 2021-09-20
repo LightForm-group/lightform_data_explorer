@@ -29,7 +29,8 @@
         <h4>Edit sample</h4>
         <div class="row">
             <div class="col">
-                <select name="sample_selection" class="form-select my-3" aria-label="Select sample to edit">
+                <select name="sample_selection" class="form-select my-3" aria-label="Select sample to edit"
+                        id="edit_sample_selection">
                     <option disabled selected> -- select a sample --</option>
                     {% for sample in all_samples %}
                         <option value="{{ sample.id }}">{{ sample.name }}</option>
@@ -44,11 +45,9 @@
             </div>
             <div class="col">
                 <label for="new_parent_select">New parent</label>
-                <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent">
+                <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent"
+                        id="edit_parent_select">
                     <option selected value="-1">None</option>
-                    {% for sample in all_samples %}
-                        <option value="{{ sample.id }}">{{ sample.name }}</option>
-                    {% endfor %}
                 </select>
             </div>
 
@@ -72,5 +71,31 @@
             <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete sample</button>
         </div>
     </form>
+
+    <script>
+        sample_select = document.querySelectorAll('#edit_sample_selection')[0];
+        sample_select.addEventListener('change', update_parent_selection)
+
+        let samples = { {% for sample in all_samples %}"{{ sample.id }}":"{{ sample.name }}", {% endfor %} "1": "None"}
+
+        function update_parent_selection() {
+            const parent_select = document.querySelectorAll('#edit_parent_select')[0];
+            const selected_sample = sample_select.value
+            // Remove all current options from select element
+            for (let a in parent_select.options) {
+                parent_select.options.remove(0);
+            }
+
+            for (let key of Object.keys(samples)) {
+                if (key !== selected_sample) {
+                    let opt = document.createElement("option");
+                    opt.value = key;
+                    opt.text = samples[key];
+                    parent_select.add(opt);
+                }
+            }
+        }
+
+    </script>
 
 {% endblock %}
