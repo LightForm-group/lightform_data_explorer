@@ -40,38 +40,75 @@
         </div>
     </form>
 
-    {#<form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
-        <h4>Rename experiment</h4>
-        <div class="col">
-            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to rename">
-                <option disabled selected> -- select a experiment --</option>
-                {% for experiment in all_experiments %}
-                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
-                {% endfor %}
-            </select>
+    <form class="row my-4" action="{{ url_for('measurement_management') }}" method="post">
+        <h4>Delete measurement</h4>
+        <div class="row">
+            <div class="col">
+                <select id="delete_sample_selection" name="delete_sample_selection" class="form-select my-3" aria-label="Select sample">
+                    <option disabled selected>-- select a sample --</option>
+                    {% for sample in all_samples %}
+                        <option value="{{ sample.id }}">{{ sample.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="col">
-            <label for="new_experiment_name_box">New experiment name</label>
-            <input type="text" class="form-control" name="new_experiment_name" id="new_experiment_name_box">
-        </div>
-        <div class="col my-3">
-            <button type="submit" class="btn btn-primary"  name="submit" value="rename">Rename experiment</button>
+        <div class="row">
+            <div class="col">
+                <label for="delete_measurement_selection">Select a measurement</label>
+                <select disabled id="delete_measurement_selection" name="delete_measurement_selection" class="form-select my-3" aria-label="Select experiment to add measurement"></select>
+            </div>
+            <div class="col my-4">
+                <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete measurement</button>
+            </div>
         </div>
     </form>
 
-    <form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
-        <h4>Delete experiment</h4>
-        <div class="col">
-            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to delete">
-                <option disabled selected>-- select a experiment --</option>
-                {% for experiment in all_experiments %}
-                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col my-4">
-            <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete experiment</button>
-        </div>
-    </form>
-#}
+    <script>
+        sample_select = document.querySelectorAll('#delete_sample_selection')[0];
+        sample_select.addEventListener('change', update_measurement_selection)
+
+        function update_measurement_selection(e) {
+            let measurement_select = document.querySelectorAll('#delete_measurement_selection')[0];
+            // Remove all current options from select element
+            for (let a in measurement_select.options) {
+                measurement_select.options.remove(0);
+            }
+
+            // Request the measurements from the server
+            request_measurement_list(e.target.value)
+
+        }
+
+        function request_measurement_list(sample_id) {
+            // Send the id of the sample back to flask to get a list of the measurements associated with that sample
+            let request = new XMLHttpRequest();
+            request.open('POST', '_request_measurements', true);
+            request.setRequestHeader('Content-Type', 'text; charset=UTF-8');
+
+            request.onload = function () {
+                if (this.status >= 200 && this.status < 400) {
+
+                    let measurement_select = document.querySelectorAll('#delete_measurement_selection')[0];
+                    measurement_select.disabled = false
+
+                    let experiments = JSON.parse(this.response);
+
+                    for (let key of Object.keys(experiments)) {
+                        let opt = document.createElement("option");
+                        opt.value = key;
+                        opt.text = experiments[key]["url"];
+                        measurement_select.add(opt);
+                    }
+
+
+                } else {
+                    // We reached our target server, but it returned an error
+                }
+            };
+
+            request.send(sample_id);
+        }
+    </script>
+
+
 {% endblock %}

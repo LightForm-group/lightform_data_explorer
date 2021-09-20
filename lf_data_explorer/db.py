@@ -52,4 +52,11 @@ class Measurement(db.Model):
     url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
-        return f'Measurement: {self.url}</a>'
+        return f'Measurement: {self.url}'
+
+    def __str__(self):
+        return f'"{self.experiment.name}: {self.url}"'
+
+    def to_json(self) -> str:
+        return f'"{self.id}": {{"sample_id": {self.sample_id}, ' \
+               f'"experiment_id": {self.experiment_id}, "url": "{self.url}"}}'

@@ -2,8 +2,8 @@ import os
 
 from werkzeug.utils import secure_filename
 
-from lf_data_explorer import app
-from flask import render_template, request, redirect, flash, url_for
+from lf_data_explorer import app, utilities
+from flask import render_template, request, redirect, flash, url_for, Response
 
 import lf_data_explorer.queries as queries
 from lf_data_explorer.utilities import allowed_file
@@ -105,8 +105,26 @@ def measurement_management():
             flash(result)
             all_experiments = queries.get_all_experiments()
             all_samples = queries.get_all_samples()
-            return render_template('experiment_management.html', all_experiments=all_experiments,
+            return render_template('measurement_management.html', all_experiments=all_experiments,
                                    all_samples=all_samples)
+        elif form_button == "delete":
+            sample_id = int(request.form['delete_sample_selection'])
+            experiment_id = int(request.form['delete_measurement_selection'])
+            result = queries.delete_measurement(sample_id, experiment_id)
+            flash(result)
+            all_experiments = queries.get_all_experiments()
+            all_samples = queries.get_all_samples()
+            return render_template('measurement_management.html', all_experiments=all_experiments,
+                                   all_samples=all_samples)
+
+
+@app.route('/measurements/_request_measurements', methods=['POST'])
+def request_measurements():
+    sample_id = int(request.data)
+    sample = queries.get_sample_by_id(sample_id)
+    measurements = utilities.measurements_to_json(sample.measurements)
+
+    return Response(measurements, status=201, mimetype='application/json')
 
 
 @app.route('/samples', methods=['POST', 'GET'], strict_slashes=False)

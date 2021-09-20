@@ -99,3 +99,11 @@ def add_measurement(sample_id: int, experiment_id: int, url: str) -> str:
     db.session.add(new_measurement)
     db.session.commit()
     return f"Measurement added for experiment '{experiment.name}' on sample '{sample.name}."
+
+
+def delete_measurement(sample_id: int, measurement_id: int) -> str:
+    sample = Sample.query.filter_by(id=sample_id).first()
+    measurement = Measurement.query.filter_by(id=measurement_id).first()
+    Measurement.query.filter_by(id=measurement_id).delete()
+    db.session.commit()
+    return f"Measurement '{measurement.url}' successfully deleted from sample {sample.name}."
