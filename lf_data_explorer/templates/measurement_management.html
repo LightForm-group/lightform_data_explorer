@@ -70,9 +70,7 @@
         function update_measurement_selection(e) {
             let measurement_select = document.querySelectorAll('#delete_measurement_selection')[0];
             // Remove all current options from select element
-            for (let a in measurement_select.options) {
-                measurement_select.options.remove(0);
-            }
+            clear_select(measurement_select)
 
             // Request the measurements from the server
             request_measurement_list(e.target.value)
