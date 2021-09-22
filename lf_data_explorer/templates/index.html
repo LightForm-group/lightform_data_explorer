@@ -5,6 +5,8 @@
 
     <div id="graph-container"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.js"></script>
+    <script src="{{ url_for('static',filename='scripts/cytoscape-dagre.js') }}"></script>
     <script>
         var cy = cytoscape({
 
@@ -44,11 +46,8 @@
             ],
 
 				layout: {
-				    name: 'breadthfirst',
-				    directed: true,
-				    padding: 10,
-				   /* color: "#ffff00",*/
-				    fit: true
+				    name: 'dagre',
+                    spacingFactor: 1.5
 				}
 
         });
