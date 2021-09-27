@@ -73,19 +73,24 @@
             clear_select(measurement_select)
 
             // Request the measurements from the server
-            request_measurement_list(e.target.value)
+            request_measurement_list(e.target.value, measurement_select)
         }
 
-        function request_measurement_list(sample_id) {
+        function request_measurement_list(sample_id, measurement_select) {
             // Send the id of the sample back to flask to get a list of the measurements associated with that sample
             let request = new XMLHttpRequest();
             request.open('POST', '_request_measurements', true);
             request.setRequestHeader('Content-Type', 'text; charset=UTF-8');
 
-            request.onload = function () {
-                if (this.status >= 200 && this.status < 400) {
+            request.onload = process_measurement_response;
+            request.send(sample_id);
+        }
 
+        function process_measurement_response() {
+            // Parse the list of measurements and populate the select element with them
+                if (this.status >= 200 && this.status < 400) {
                     let measurement_select = document.querySelectorAll('#delete_measurement_selection')[0];
+
                     measurement_select.disabled = false
 
                     let measurements = JSON.parse(this.response);
@@ -97,9 +102,7 @@
                         measurement_select.add(opt);
                     }
                 }
-            };
-            request.send(sample_id);
-        }
+            }
     </script>
 
 

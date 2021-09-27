@@ -94,17 +94,51 @@
 
     <script>
         const confirmation_modal = document.getElementById('delete_sample_modal')
-        confirmation_modal.addEventListener('show.bs.modal', function (event) {
-            const sample_selection = document.getElementById('delete_sample_selection')
-            const sample_name = sample_selection[sample_selection.selectedIndex].text
+        const sample_selection = document.getElementById('delete_sample_selection')
+        const sample_name = sample_selection[sample_selection.selectedIndex].text
 
-            // If necessary, you could initiate an AJAX request here
-            // and then do the updating in a callback.
-            //
-            // Update the modal's content.
-            const modalBodyInput = document.getElementById('modal_text');
-            modalBodyInput.innerText = `Are you sure you want to delete sample "${sample_name}?"`
+        confirmation_modal.addEventListener('show.bs.modal', function (event) {
+            request_sample_stats(sample_selection.value)
         })
+
+        function request_sample_stats(sample_id) {
+            // Send the id of the sample back to flask to get a the number of measurements and children
+            // associated with the sample.
+            let request = new XMLHttpRequest();
+            request.open('POST', '_request_sample_stats', true);
+            request.setRequestHeader('Content-Type', 'text; charset=UTF-8');
+
+            request.onload = process_sample_relation_response;
+            request.send(sample_id);
+        }
+
+        function process_sample_relation_response() {
+            // Parse the sample stats and populate the modal box with the results.
+            if (this.status >= 200 && this.status < 400) {
+
+                let sample_stats = JSON.parse(this.response);
+                let num_children = sample_stats["num_children"]
+                let num_measurements = sample_stats["num_measurements"]
+
+                const modalBodyInput = document.getElementById('modal_text');
+                let warning_message = ""
+                if (num_measurements > 0 || num_children > 0) {
+                    warning_message = warning_message.concat(`Sample "${sample_name}" has:\n\n`)
+                }
+                if (num_measurements > 0) {
+                    warning_message = warning_message.concat(`${num_measurements} measurements which will be deleted\n`)
+                }
+                if (num_children > 0) {
+                    warning_message = warning_message.concat(`${num_children} child relationships which will be removed\n`)
+                }
+                if (num_measurements > 0 || num_children > 0) {
+                    warning_message = warning_message.concat(`\n`)
+                }
+                warning_message = warning_message.concat(`Are you sure you want to delete sample "${sample_name}"?`)
+                modalBodyInput.innerText = warning_message
+            }
+        }
+
     </script>
 
 
@@ -121,7 +155,6 @@
         function update_parent_selection() {
             const parent_select = document.querySelectorAll('#edit_parent_select')[0];
             const selected_sample = sample_select.value
-            // Remove all current options from select element
             clear_select(parent_select)
 
             for (let key of Object.keys(samples)) {
