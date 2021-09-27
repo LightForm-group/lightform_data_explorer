@@ -6,11 +6,13 @@ from lf_data_explorer.db import Sample, db, SampleImage, Experiment, Measurement
 
 
 def get_all_samples() -> List[Sample]:
-    return Sample.query.all()
+    samples = Sample.query.all()
+    return sorted(samples, key=str)
 
 
 def get_all_experiments() -> List[Experiment]:
-    return Experiment.query.all()
+    experiments = Experiment.query.all()
+    return sorted(experiments, key=str)
 
 
 def get_sample_by_name(sample_name: str) -> Optional[Sample]:
@@ -78,7 +80,10 @@ def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int])
     sample = Sample.query.filter_by(id=sample_id).first()
     old_name = sample.name
     sample.name = new_sample_name
-    sample.parent_sample = new_parent
+    if new_parent is not None:
+        sample.parent_sample = new_parent
+    else:
+        sample.parent_sample = sqlalchemy.null()
 
     db.session.commit()
     return f"Sample '{old_name}' record updated."

@@ -26,6 +26,9 @@ class Sample(db.Model):
     def __repr__(self):
         return f'Sample: {self.name}'
 
+    def __str__(self):
+        return self.name
+
 
 class SampleImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +46,9 @@ class Experiment(db.Model):
 
     def __repr__(self):
         return f'Experiment: {self.name}'
+
+    def __str__(self):
+        return self.name
 
 
 class Measurement(db.Model):
