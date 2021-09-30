@@ -3,3 +3,5 @@ Flask
 flask-sqlalchemy
 sqlalchemy
 werkzeug
+pymysql
+cryptography

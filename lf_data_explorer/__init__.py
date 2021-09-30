@@ -15,3 +15,7 @@ app.app_context().push()
 from lf_data_explorer import views
 
 setup_db(app, db)
+
+# Run these two lines to initialise the empty database.
+db.create_all()
+db.session.commit()

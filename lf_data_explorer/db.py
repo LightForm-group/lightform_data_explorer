@@ -11,14 +11,14 @@ def setup_db(app: Flask, db_instance: SQLAlchemy):
     username = db_config["username"]
     password = db_config["password"]
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@localhost/test'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@localhost/tifun'
     db_instance.init_app(app)
 
 
 class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
-    parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id'))
+    parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"))
     images = db.relationship('SampleImage', backref='sample', lazy=True)
     measurements = db.relationship('Measurement', backref='sample', lazy=True)
     parent = db.relationship('Sample', backref='children', remote_side='Sample.id', lazy=True)
@@ -33,7 +33,8 @@ class Sample(db.Model):
 class SampleImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(1000), nullable=False)
-    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id'), nullable=False)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False)
 
     def __repr__(self):
         return f'Image: {self.path}'
@@ -53,8 +54,10 @@ class Experiment(db.Model):
 
 class Measurement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id'), nullable=False)
-    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.id'), nullable=False)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False)
+    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.id', onupdate="CASCADE", ondelete="CASCADE"),
+                              nullable=False)
     url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
