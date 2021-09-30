@@ -95,7 +95,6 @@
     <script>
         const confirmation_modal = document.getElementById('delete_sample_modal')
         const sample_selection = document.getElementById('delete_sample_selection')
-        const sample_name = sample_selection[sample_selection.selectedIndex].text
 
         confirmation_modal.addEventListener('show.bs.modal', function (event) {
             request_sample_stats(sample_selection.value)
@@ -115,6 +114,7 @@
         function process_sample_relation_response() {
             // Parse the sample stats and populate the modal box with the results.
             if (this.status >= 200 && this.status < 400) {
+                const sample_name = sample_selection[sample_selection.selectedIndex].text
 
                 let sample_stats = JSON.parse(this.response);
                 let num_children = sample_stats["num_children"]
