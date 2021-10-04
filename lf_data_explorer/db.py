@@ -8,10 +8,8 @@ db = SQLAlchemy()
 
 def setup_db(app: Flask, db_instance: SQLAlchemy):
     db_config = load_config()["database"]
-    username = db_config["username"]
-    password = db_config["password"]
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@localhost/tifun'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_config["uri"]
     db_instance.init_app(app)
 
 
