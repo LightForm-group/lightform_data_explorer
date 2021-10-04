@@ -9,8 +9,8 @@ import lf_data_explorer.queries.experiment
 from lf_data_explorer import app, utilities
 from flask import render_template, request, redirect, flash, url_for, Response
 
-import lf_data_explorer.queries as queries
-from lf_data_explorer.utilities import allowed_file
+from lf_data_explorer.queries.queries import add_new_image
+from lf_data_explorer.utilities import allowed_file, flash_result
 
 
 @app.route('/')
@@ -37,7 +37,7 @@ def sample_management():
             new_name = request.form['sample_name']
             parent = int(request.form['parent_selection'])
             result = lf_data_explorer.queries.sample.add_new_sample(new_name, parent)
-            flash(result)
+            flash_result(result)
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)
         elif form_button == "rename":
@@ -73,20 +73,20 @@ def experiment_management():
         if form_button == "add":
             new_name = request.form['experiment_name']
             result = lf_data_explorer.queries.experiment.add_new_experiment(new_name)
-            flash(result)
+            flash_result(result)
             all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
             return render_template('experiment_management.html', all_experiments=all_experiments)
         elif form_button == "rename":
             experiment_id = int(request.form["experiment_selection"])
             new_experiment_name = request.form["new_experiment_name"]
             result = lf_data_explorer.queries.experiment.rename_experiment(experiment_id, new_experiment_name)
-            flash(result)
+            flash_result(result)
             all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
             return render_template('experiment_management.html', all_experiments=all_experiments)
         elif form_button == "delete":
             experiment_id = int(request.form["experiment_selection"])
             result = lf_data_explorer.queries.experiment.delete_experiment(experiment_id)
-            flash(result)
+            flash_result(result)
 
             all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
             return render_template('experiment_management.html', all_experiments=all_experiments)
@@ -106,7 +106,7 @@ def measurement_management():
             experiment_id = int(request.form['experiment_selection'])
             url = request.form["url"]
             result = lf_data_explorer.queries.measurement.add_measurement(sample_id, experiment_id, url)
-            flash(result)
+            flash_result(result)
             all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('measurement_management.html', all_experiments=all_experiments,
@@ -115,7 +115,7 @@ def measurement_management():
             sample_id = int(request.form['delete_sample_selection'])
             experiment_id = int(request.form['delete_measurement_selection'])
             result = lf_data_explorer.queries.measurement.delete_measurement(sample_id, experiment_id)
-            flash(result)
+            flash_result(result)
             all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('measurement_management.html', all_experiments=all_experiments,
@@ -125,7 +125,7 @@ def measurement_management():
 @app.route('/measurements/_request_measurements', methods=['POST'])
 def request_measurements():
     sample_id = int(request.data)
-    measurements = lf_data_explorer.queries.sample.get_sample_measurments(sample_id)
+    measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
 
     return Response(utilities.measurements_to_json(measurements), status=201,
                     mimetype='application/json')
@@ -166,14 +166,14 @@ def add_image(sample_id: int):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            queries.add_new_image(filename, sample_id)
+            add_new_image(filename, sample_id)
             return redirect(url_for("select_sample", sample_id=sample_id))
 
 
 @app.route('/samples/_request_sample_stats', methods=['POST'])
 def _request_sample_stats():
     sample_id = int(request.data)
-    measurements = lf_data_explorer.queries.sample.get_sample_measurments(sample_id)
+    measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
     children = lf_data_explorer.queries.sample.get_sample_children(sample_id)
     stats = f'{{"num_measurements": {len(measurements)}, "num_children": {len(children)}}}'
 

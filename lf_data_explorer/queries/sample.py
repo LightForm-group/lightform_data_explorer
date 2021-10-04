@@ -4,6 +4,7 @@ import sqlalchemy.exc
 
 from lf_data_explorer import db
 from lf_data_explorer.db import Sample
+from lf_data_explorer.utilities import Result
 
 
 def get_all_samples() -> List[Sample]:
@@ -26,25 +27,27 @@ def get_sample_children(sample_id: int) -> List[Sample]:
 
     return sample.children
 
-def get_sample_measurments(sample_id: int) -> List[Sample]:
+
+def get_sample_measurements(sample_id: int) -> List[Sample]:
     sample = get_sample_by_id(sample_id)
     if not sample:
         raise IndexError(f"Sample {sample_id} not found.")
 
     return sample.measurements
 
-def delete_sample(sample_id: int) -> str:
+
+def delete_sample(sample_id: int) -> Result:
     """Delete the sample with `sample_id` from the database.
     Return the name of the deleted sample."""
     sample_name = Sample.query.filter_by(id=sample_id).first().name
     Sample.query.filter_by(id=sample_id).delete()
     db.session.commit()
-    return f"Sample '{sample_name}' successfully deleted."
+    return Result(True, f"Sample '{sample_name}' successfully deleted.")
 
 
-def add_new_sample(sample_name: str, parent: int) -> str:
+def add_new_sample(sample_name: str, parent: int) -> Result:
     if parent == -1:
-        parent = None
+        parent = sqlalchemy.null()
     new_sample = Sample(name=sample_name, parent_sample=parent)
     db.session.add(new_sample)
     try:
@@ -52,13 +55,13 @@ def add_new_sample(sample_name: str, parent: int) -> str:
     except sqlalchemy.exc.IntegrityError as e:
         if e.orig.args[0] == 1062:
             db.session.rollback()
-            return f"Sample name '{sample_name}' already exists. Record not added."
+            return Result(False, f"Sample name '{sample_name}' already exists. Record not added.")
         else:
-            return "Sample not added. Unknown error."
-    return f"Successfully added new sample: '{sample_name}'."
+            return Result(False, "Sample not added. Unknown error.")
+    return Result(True, f"Successfully added new sample: '{sample_name}'.")
 
 
-def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int]) -> str:
+def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int]) -> Result:
     sample = Sample.query.filter_by(id=sample_id).first()
     old_name = sample.name
     sample.name = new_sample_name
@@ -68,4 +71,4 @@ def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int])
         sample.parent_sample = sqlalchemy.null()
 
     db.session.commit()
-    return f"Sample '{old_name}' record updated."
+    return Result(True, f"Sample '{old_name}' record updated.")
