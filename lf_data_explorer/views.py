@@ -1,22 +1,78 @@
 import os
 
+from flask_login import login_user, login_required, current_user, logout_user
+from flask import render_template, render_template_string, request, redirect, flash, \
+    url_for, Response, abort
 from werkzeug.utils import secure_filename
 
 import lf_data_explorer.queries.measurement
 import lf_data_explorer.queries.sample
-
+import lf_data_explorer.queries.user
 import lf_data_explorer.queries.experiment
-from lf_data_explorer import app, utilities
-from flask import render_template, request, redirect, flash, url_for, Response
+
+from lf_data_explorer import app, utilities, User
 
 from lf_data_explorer.queries.queries import add_new_image
-from lf_data_explorer.utilities import allowed_file, flash_result
+from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url
 
 
 @app.route('/')
 def index():
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
     return render_template("index.html", all_samples=all_samples)
+
+
+@app.route('/admin', methods=['POST', 'GET'])
+def admin():
+    if request.method == "GET":
+        if current_user.is_authenticated:
+            flash(f"Already logged in as: {current_user.username}")
+            return redirect(url_for('index'))
+        return render_template("admin.html")
+    else:
+        user = User.query.filter_by(username=request.form["username"]).first()
+        if user:
+            if user.is_active:
+                if user.validate_password(request.form["password"]):
+                    login_user(user)
+                    flash('Logged in successfully.')
+
+                    next_page = request.args.get('next')
+                    if not is_safe_url(next_page):
+                        return abort(400)
+
+                    return redirect(next_page or url_for('index'))
+
+        flash_result(Result(False, "Incorrect username or password."))
+        return redirect(request.referrer)
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        if request.form["password"] != request.form["confirm_password"]:
+            flash_result(Result(False, "Passwords do not match."))
+        result = lf_data_explorer.queries.user.new_user(request.form["username"],
+                                                        request.form["password"])
+
+        flash_result(result)
+        return render_template("register.html")
+
+
+@app.route("/secret_page", methods=["GET"])
+@login_required
+def secret_page():
+    return render_template_string("You can only see this if logged in.")
+
+
+@app.route('/signout')
+@login_required
+def signout():
+    logout_user()
+    flash("Successfully logged out.")
+    return redirect(url_for('index'))
 
 
 @app.route('/experiments')

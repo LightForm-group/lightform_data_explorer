@@ -39,6 +39,9 @@
                                         class="nav-link{% if id == active_page %} active{% endif %}">{{ caption|e }}</a>
                 </li>
             {% endfor %}
+            {% if current_user.is_authenticated %}
+                <li class="nav-item"><a href="{{ url_for('signout') }}" class="nav-link">Sign Out</a></li>
+            {% endif %}
         </ul>
     </header>
 </div>
