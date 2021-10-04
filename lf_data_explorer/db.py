@@ -17,6 +17,8 @@ class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"))
+    creation_type = db.Column(db.String(20))
+    creation_url = db.Column(db.String(200))
     images = db.relationship('SampleImage', backref='sample', lazy=True)
     measurements = db.relationship('Measurement', backref='sample', lazy=True)
     parent = db.relationship('Sample', backref='children', remote_side='Sample.id', lazy=True)

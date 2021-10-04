@@ -46,10 +46,14 @@ def delete_sample(sample_id: int) -> Result:
     return Result(True, f"Sample '{sample_name}' successfully deleted.")
 
 
-def add_new_sample(sample_name: str, parent: int) -> Result:
+def add_new_sample(sample_name: str, parent: int, creation_method: str,
+                   creation_url: str) -> Result:
     if parent == -1:
         parent = sqlalchemy.null()
-    new_sample = Sample(name=sample_name, parent_sample=parent)
+    if creation_url == "":
+        creation_url = sqlalchemy.null()
+    new_sample = Sample(name=sample_name, parent_sample=parent, creation_type=creation_method,
+                        creation_url=creation_url)
     db.session.add(new_sample)
     return try_save_new_record(sample_name, f"Successfully added new sample: '{sample_name}'.")
 

@@ -36,7 +36,10 @@ def sample_management():
         if form_button == "add":
             new_name = request.form['sample_name']
             parent = int(request.form['parent_selection'])
-            result = lf_data_explorer.queries.sample.add_new_sample(new_name, parent)
+            creation_method = request.form['creation_method']
+            creation_url = request.form['creation_method_url']
+            result = lf_data_explorer.queries.sample.add_new_sample(new_name, parent,
+                                                                    creation_method, creation_url)
             flash_result(result)
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)

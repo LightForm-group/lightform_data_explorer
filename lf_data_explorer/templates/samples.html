@@ -24,7 +24,9 @@
             <div id="sample_details" class="my-3">
                 <h3>Sample Details</h3>
                 Sample Name: {{ current_sample.name }}<br>
-                Sample id: {{ current_sample.id }}.<br>
+                Sample id: {{ current_sample.id }}<br>
+                Sample creation method: {{ current_sample.creation_type }}<br>
+                Sample creation details: {{ current_sample.creation_url | urlize }}<br>
             </div>
             <div id="sample_images" class="row my-4">
                 <div class="col-2">
@@ -53,13 +55,8 @@
             {% else %}
                 Sample has no images.
             {% endif %}
-            <div id="subsamples" class="row mt-4">
-                <div class="col">
-                    <h3>Sample processing</h3>
-                </div>
-            </div>
             <div id="parent_samples" class="my-3">
-                <h4>Parent samples</h4>
+                <h3>Parent samples</h3>
                 {% if current_sample.parent_sample %}
                     Sample is derived from sample: <a href="{{ url_for('select_sample', sample_id=current_sample.parent.id) }}">{{ current_sample.parent.name }}</a>
                 {% else %}
@@ -67,7 +64,7 @@
                 {% endif %}
             </div>
             <div id="child_samples" class="my-3">
-                <h4>Child samples</h4>
+                <h3>Child samples</h3>
                 {% if current_sample.children %}
                     Sample has these child samples:
                     <ul>

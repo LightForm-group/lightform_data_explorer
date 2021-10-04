@@ -5,23 +5,40 @@
         <h2>Sample Management</h2>
     </div>
 
-    <form class="row my-4" action="{{ url_for('sample_management') }}" method="POST">
-        <h4>Add sample</h4>
-        <div class="col">
-            <label for="sample_name_box">Sample name</label>
-            <input type="text" class="form-control my-2" name="sample_name" id="sample_name_box">
+    <form class="my-4" action="{{ url_for('sample_management') }}" method="POST">
+        <div class="row">
+            <h4>Add sample</h4>
+            <div class="col">
+                <label for="sample_name_box">Sample name</label>
+                <input type="text" class="form-control my-2" name="sample_name" id="sample_name_box">
+            </div>
+            <div class="col">
+                <label for="new_parent_select">Sample parent</label>
+                <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent">
+                    <option selected value="-1">None</option>
+                    {% for sample in all_samples %}
+                        <option value="{{ sample.id }}">{{ sample.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="col">
-            <label for="new_parent_select">Sample parent</label>
-            <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent">
-                <option selected value="-1">None</option>
-                {% for sample in all_samples %}
-                    <option value="{{ sample.id }}">{{ sample.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col my-3">
-            <button type="submit" class="btn btn-primary" name="submit" value="add">Save new sample</button>
+        <div class="row">
+            <div class="col">
+                <label for="creation_method_selection">Creation Method</label>
+                <select name="creation_method" class="form-select my-2" aria-label="Select creation method">
+                    <option selected value="Unknown">Unknown</option>
+                    <option value="Cutting">Cutting</option>
+                    <option value="Rolling">Rolling</option>
+                    <option value="Forging">Forging</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="creation_method_url">Link to creation method details</label>
+                <input type="text" class="form-control my-2" name="creation_method_url" id="creation_method_url">
+            </div>
+            <div class="col my-3">
+                <button type="submit" class="btn btn-primary" name="submit" value="add">Save new sample</button>
+            </div>
         </div>
     </form>
 
