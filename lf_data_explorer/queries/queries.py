@@ -12,3 +12,16 @@ def add_new_image(image_path: str, sample_id: int) -> Result:
     except sqlalchemy.exc.IntegrityError as e:
         return Result(False, "Sample not added. Unknown error.")
     return Result(True, f"Successfully added: '{image_path}'.")
+
+
+def try_save_new_record(new_sample_name: str, success_message: str) -> Result:
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        if e.orig.args[0] == 1062:
+            db.session.rollback()
+            return Result(False, f"Sample name '{new_sample_name}' already exists. "
+                                 f"Record not added.")
+        else:
+            return Result(False, "Sample not added. Unknown error.")
+    return Result(True, success_message)

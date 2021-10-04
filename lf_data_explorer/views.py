@@ -49,7 +49,7 @@ def sample_management():
             if parent_sample == -1:
                 parent_sample = None
             result = lf_data_explorer.queries.sample.edit_sample(sample_id, new_sample_name, parent_sample)
-            flash(result)
+            flash_result(result)
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)
 
@@ -57,7 +57,7 @@ def sample_management():
             sample_id = int(request.form["sample_selection"])
 
             result = lf_data_explorer.queries.sample.delete_sample(sample_id)
-            flash(result)
+            flash_result(result)
 
             all_samples = lf_data_explorer.queries.sample.get_all_samples()
             return render_template('sample_management.html', all_samples=all_samples)

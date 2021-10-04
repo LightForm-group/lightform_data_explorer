@@ -4,6 +4,7 @@ import sqlalchemy.exc
 
 from lf_data_explorer import db
 from lf_data_explorer.db import Sample
+from lf_data_explorer.queries.queries import try_save_new_record
 from lf_data_explorer.utilities import Result
 
 
@@ -50,15 +51,7 @@ def add_new_sample(sample_name: str, parent: int) -> Result:
         parent = sqlalchemy.null()
     new_sample = Sample(name=sample_name, parent_sample=parent)
     db.session.add(new_sample)
-    try:
-        db.session.commit()
-    except sqlalchemy.exc.IntegrityError as e:
-        if e.orig.args[0] == 1062:
-            db.session.rollback()
-            return Result(False, f"Sample name '{sample_name}' already exists. Record not added.")
-        else:
-            return Result(False, "Sample not added. Unknown error.")
-    return Result(True, f"Successfully added new sample: '{sample_name}'.")
+    return try_save_new_record(sample_name, f"Successfully added new sample: '{sample_name}'.")
 
 
 def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int]) -> Result:
@@ -69,6 +62,4 @@ def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int])
         sample.parent_sample = new_parent
     else:
         sample.parent_sample = sqlalchemy.null()
-
-    db.session.commit()
-    return Result(True, f"Sample '{old_name}' record updated.")
+    return try_save_new_record(new_sample_name,  f"Sample '{old_name}' record updated.")
