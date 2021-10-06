@@ -26,10 +26,9 @@
             <div class="col">
                 <label for="creation_method_selection">Creation Method</label>
                 <select name="creation_method" class="form-select my-2" aria-label="Select creation method">
-                    <option selected value="Unknown">Unknown</option>
-                    <option value="Cutting">Cutting</option>
-                    <option value="Rolling">Rolling</option>
-                    <option value="Forging">Forging</option>
+                    {% for method in methods %}
+                        <option {%  if loop.index == 1 %}selected{% endif %} value="{{ method.name }}">{{ method.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col">

@@ -13,13 +13,14 @@ import lf_data_explorer.queries.experiment
 from lf_data_explorer import app, utilities, User
 
 from lf_data_explorer.queries.queries import add_new_image
-from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url
+from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url, \
+    sample_prep_methods
 
 
 @app.route('/')
 def index():
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
-    return render_template("index.html", all_samples=all_samples)
+    return render_template("index.html", all_samples=all_samples, methods=sample_prep_methods)
 
 
 @app.route('/admin', methods=['POST', 'GET'])
@@ -80,8 +81,7 @@ def experiments():
 @login_required
 def sample_management():
     if request.method == "GET":
-        all_samples = lf_data_explorer.queries.sample.get_all_samples()
-        return render_template('sample_management.html', all_samples=all_samples)
+        return _render_sample_management()
     else:
         form_button = request.form["submit"]
         if form_button == "add":
@@ -92,8 +92,7 @@ def sample_management():
             result = lf_data_explorer.queries.sample.add_new_sample(new_name, parent,
                                                                     creation_method, creation_url)
             flash_result(result)
-            all_samples = lf_data_explorer.queries.sample.get_all_samples()
-            return render_template('sample_management.html', all_samples=all_samples)
+            return _render_sample_management()
         elif form_button == "rename":
             sample_id = int(request.form["sample_selection"])
             new_sample_name = request.form["new_sample_name"]
@@ -104,17 +103,20 @@ def sample_management():
                 parent_sample = None
             result = lf_data_explorer.queries.sample.edit_sample(sample_id, new_sample_name, parent_sample)
             flash_result(result)
-            all_samples = lf_data_explorer.queries.sample.get_all_samples()
-            return render_template('sample_management.html', all_samples=all_samples)
+            return _render_sample_management()
 
         elif form_button == "delete":
             sample_id = int(request.form["sample_selection"])
 
             result = lf_data_explorer.queries.sample.delete_sample(sample_id)
             flash_result(result)
+            return _render_sample_management()
 
-            all_samples = lf_data_explorer.queries.sample.get_all_samples()
-            return render_template('sample_management.html', all_samples=all_samples)
+
+def _render_sample_management():
+    all_samples = lf_data_explorer.queries.sample.get_all_samples()
+    return render_template('sample_management.html', all_samples=all_samples,
+                           methods=sample_prep_methods)
 
 
 @app.route('/experiments/manage', methods=['POST', 'GET'])
