@@ -61,12 +61,6 @@ def register():
         return render_template("register.html")
 
 
-@app.route("/secret_page", methods=["GET"])
-@login_required
-def secret_page():
-    return render_template_string("You can only see this if logged in.")
-
-
 @app.route('/signout')
 @login_required
 def signout():
@@ -83,6 +77,7 @@ def experiments():
 
 
 @app.route('/samples/manage', methods=['POST', 'GET'])
+@login_required
 def sample_management():
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
@@ -123,6 +118,7 @@ def sample_management():
 
 
 @app.route('/experiments/manage', methods=['POST', 'GET'])
+@login_required
 def experiment_management():
     if request.method == "GET":
         all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
@@ -152,6 +148,7 @@ def experiment_management():
 
 
 @app.route('/measurements/manage', methods=['POST', 'GET'])
+@login_required
 def measurement_management():
     if request.method == "GET":
         all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
@@ -207,6 +204,7 @@ def select_sample(sample_id: int):
 
 
 @app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])
+@login_required
 def add_image(sample_id: int):
     if request.method == "GET":
         sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)

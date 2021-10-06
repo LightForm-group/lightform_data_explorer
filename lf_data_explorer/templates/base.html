@@ -28,10 +28,9 @@
 
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <img class="bi me-2" height=40 width=40 src={{ url_for('static', filename='logo_small.png') }} alt="Lightform logo">
+            <img class="bi me-2" height=40 width=40 src="{{ url_for('static', filename='logo_small.png') }}" alt="Lightform logo">
             <span class="fs-4">TiFun Materials Database</span>
         </a>
-
         <ul class="nav nav-pills">
 
             {% for href, id, caption in navigation_bar %}
@@ -40,7 +39,18 @@
                 </li>
             {% endfor %}
             {% if current_user.is_authenticated %}
-                <li class="nav-item"><a href="{{ url_for('signout') }}" class="nav-link">Sign Out</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Manage
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{{ url_for('sample_management') }}">Samples</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('experiment_management') }}">Experiments</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('measurement_management') }}">Measurements</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('signout') }}">Sign Out</a></li>
+                    </ul>
+                </li>
             {% endif %}
         </ul>
     </header>
