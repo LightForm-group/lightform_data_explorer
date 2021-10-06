@@ -5,49 +5,84 @@
         <h2>Experiment Management</h2>
     </div>
 
-    <form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
-        <h4>Add experiment</h4>
-        <div class="col">
-            <label for="experiment_name_box">Experiment name</label>
-            <input type="text" class="form-control" name="experiment_name" id="experiment_name_box">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="add-tab" data-bs-toggle="tab" data-bs-target="#add" type="button"
+                    role="tab" aria-controls="add" aria-selected="true">Add
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit" type="button"
+                    role="tab" aria-controls="edit" aria-selected="false">Edit
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete" type="button"
+                    role="tab" aria-controls="delete" aria-selected="false">Delete
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="add" role="tabpanel" aria-labelledby="add-tab">
+            <form class="my-3" action="{{ url_for('experiment_management') }}" method="post">
+                <h4>Add experiment</h4>
+                <div class="row my-3 align-items-end" >
+                    <div class="col">
+                        <label for="experiment_name_box">Experiment name</label>
+                        <input type="text" class="form-control my-3" name="experiment_name" id="experiment_name_box">
+                    </div>
+                    <div class="col my-3">
+                        <button type="submit" class="btn btn-primary" name="submit" value="add">Save new experiment</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="col my-3">
-            <button type="submit" class="btn btn-primary" name="submit" value="add">Save new experiment</button>
+        <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
+            <form class="my-3" action="{{ url_for('experiment_management') }}" method="post">
+                <h4>Rename experiment</h4>
+                <div class="row my-3 align-items-end">
+                    <div class="col">
+                        <label for="experiment_selection">Old experiment name</label>
+                        <select name="experiment_selection" class="form-select my-3"
+                                aria-label="Select experiment to rename">
+                            <option disabled selected> -- select a experiment --</option>
+                            {% for experiment in all_experiments %}
+                                <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="new_experiment_name_box">New experiment name</label>
+                        <input type="text" class="form-control my-3" name="new_experiment_name" id="new_experiment_name_box">
+                    </div>
+                    <div class="col my-3">
+                        <button type="submit" class="btn btn-primary" name="submit" value="rename">Rename experiment
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-
-    <form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
-        <h4>Rename experiment</h4>
-        <div class="col">
-            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to rename">
-                <option disabled selected> -- select a experiment --</option>
-                {% for experiment in all_experiments %}
-                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
-                {% endfor %}
-            </select>
+        <div class="tab-pane fade" id="delete" role="tabpanel" aria-labelledby="delete-tab">
+            <form class="my-3" action="{{ url_for('experiment_management') }}" method="post">
+                <h4>Delete experiment</h4>
+                <div class="row my-3 align-items-end">
+                    <div class="col">
+                        <label for="experiment_selection">Experiment name</label>
+                        <select name="experiment_selection" class="form-select my-3"
+                                aria-label="Select experiment to delete">
+                            <option disabled selected>-- select a experiment --</option>
+                            {% for experiment in all_experiments %}
+                                <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col my-3">
+                        <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete experiment
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="col">
-            <label for="new_experiment_name_box">New experiment name</label>
-            <input type="text" class="form-control" name="new_experiment_name" id="new_experiment_name_box">
-        </div>
-        <div class="col my-3">
-            <button type="submit" class="btn btn-primary"  name="submit" value="rename">Rename experiment</button>
-        </div>
-    </form>
-
-    <form class="row my-4" action="{{ url_for('experiment_management') }}" method="post">
-        <h4>Delete experiment</h4>
-        <div class="col">
-            <select name="experiment_selection" class="form-select my-3" aria-label="Select experiment to delete">
-                <option disabled selected>-- select a experiment --</option>
-                {% for experiment in all_experiments %}
-                    <option value="{{ experiment.id }}">{{ experiment.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col my-4">
-            <button type="submit" class="btn btn-primary" name="submit" value="delete">Delete experiment</button>
-        </div>
-    </form>
+    </div>
 
 {% endblock %}
