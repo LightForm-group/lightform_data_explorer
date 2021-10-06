@@ -58,10 +58,13 @@ def add_new_sample(sample_name: str, parent: int, creation_method: str,
     return try_save_new_record(sample_name, f"Successfully added new sample: '{sample_name}'.")
 
 
-def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int]) -> Result:
+def edit_sample(sample_id: int, new_sample_name: str, new_parent: Optional[int],
+                creation_method: str, creation_url: str) -> Result:
     sample = Sample.query.filter_by(id=sample_id).first()
     old_name = sample.name
     sample.name = new_sample_name
+    sample.creation_type = creation_method
+    sample.creation_url = creation_url
     if new_parent is not None:
         sample.parent_sample = new_parent
     else:

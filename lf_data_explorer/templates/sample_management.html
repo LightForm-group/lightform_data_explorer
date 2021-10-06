@@ -38,6 +38,23 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="creation_method">Creation Method</label>
+                        <select name="creation_method" class="form-select my-2" aria-label="Select creation method">
+                            {% for method in methods %}
+                                <option {%  if loop.index == 1 %}selected{% endif %} value="{{ method.name }}">{{ method.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="creation_method_url">Link to creation method details</label>
+                        <input type="text" class="form-control my-2" name="creation_method_url" id="creation_method_url">
+                    </div>
+                    <div class="col my-3">
+                        <button type="submit" class="btn btn-primary" name="submit" value="add">Save new sample</button>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
@@ -56,11 +73,11 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label for="new_sample_name_box">New sample name</label><br>
-                        <input type="text" class="form-control my-2" name="new_sample_name" id="new_sample_name_box">
+                        <label for="sample_name_box">New sample name</label><br>
+                        <input type="text" class="form-control my-2" name="sample_name" id="sample_name_box">
                     </div>
                     <div class="col">
-                        <label for="new_parent_select">New parent</label>
+                        <label for="parent_select">New parent</label>
                         <select name="parent_selection" class="form-select my-2" aria-label="Select sample parent"
                                 id="edit_parent_select">
                             <option selected value="-1">None</option>
@@ -69,15 +86,15 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label for="new_creation_method">Creation Method</label>
-                        <select name="new_creation_method" class="form-select my-2" aria-label="Select creation method">
+                        <label for="creation_method">Creation Method</label>
+                        <select name="creation_method" class="form-select my-2" aria-label="Select creation method">
                             {% for method in methods %}
                                 <option {%  if loop.index == 1 %}selected{% endif %} value="{{ method.name }}">{{ method.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col">
-                        <label for="new_creation_method_url">Link to creation method details</label>
+                        <label for="creation_method_url">Link to creation method details</label>
                         <input type="text" class="form-control my-2" name="creation_method_url" id="creation_method_url">
                     </div>
                     <div class="col my-3 d-flex">

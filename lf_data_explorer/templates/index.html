@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% set active_page = "index" %}
 {% block body %}
-    This is the home page.
+    This interactive figure shows sample records and the relationships between the samples. Clicking on a node
+    will give further details about the sample. Clicking on an edge will give further details about the sample
+    relationship if this data has been added.
 
     <div id="graph-container"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
@@ -21,7 +23,8 @@
                 {% for sample in all_samples -%}
                     {% for child in sample.children -%}
                         {'data': {'id': '{{ sample.name }}-{{ child.name }}', 'source': '{{ sample.name }}',
-                                'target': '{{ child.name }}'}, 'classes': '{{child.creation_type}}' },
+                                'target': '{{ child.name }}'{% if child.creation_url %}, href: '{{ child.creation_url }}'{% endif %}},
+                            'classes': '{{child.creation_type}}' },
                     {% endfor %}
                 {% endfor %}
             ],
@@ -63,8 +66,10 @@
 
         });
 
-        cy.on('tap', 'node', function () {
-            window.location.href = this.data('href');
+        cy.on('tap', 'node, edge', function () {
+            if (this.data('href') !== undefined) {
+                window.location.href = this.data('href');
+            }
         });
 
         // Draw a legend on a separate canvas over the graph

@@ -1,8 +1,7 @@
 import os
 
 from flask_login import login_user, login_required, current_user, logout_user
-from flask import render_template, render_template_string, request, redirect, flash, \
-    url_for, Response, abort
+from flask import render_template, request, redirect, flash, url_for, Response, abort
 from werkzeug.utils import secure_filename
 
 import lf_data_explorer.queries.measurement
@@ -95,13 +94,17 @@ def sample_management():
             return _render_sample_management()
         elif form_button == "rename":
             sample_id = int(request.form["sample_selection"])
-            new_sample_name = request.form["new_sample_name"]
+            new_sample_name = request.form["sample_name"]
             if not new_sample_name:
                 new_sample_name = lf_data_explorer.queries.sample.get_sample_by_id(sample_id).name
             parent_sample = int(request.form["parent_selection"])
             if parent_sample == -1:
                 parent_sample = None
-            result = lf_data_explorer.queries.sample.edit_sample(sample_id, new_sample_name, parent_sample)
+            creation_method = request.form['creation_method']
+            creation_url = request.form['creation_method_url']
+            result = lf_data_explorer.queries.sample.edit_sample(sample_id, new_sample_name,
+                                                                 parent_sample, creation_method,
+                                                                 creation_url)
             flash_result(result)
             return _render_sample_management()
 
