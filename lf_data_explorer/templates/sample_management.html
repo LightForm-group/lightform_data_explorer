@@ -60,6 +60,8 @@
         <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
             <form class="my-4" action="{{ url_for('sample_management') }}" method="POST">
                 <h4>Edit sample</h4>
+                When a sample is selected from the drop-down list, the current values for that sample are populated in the boxes below.<br>
+                Once you have made any required changes, press the "save changes" button to update the sample record.
                 <div class="row">
                     <div class="col">
                         <select name="sample_selection" class="form-select my-3" aria-label="Select sample to edit"
@@ -73,8 +75,8 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label for="sample_name_box">New sample name</label><br>
-                        <input type="text" class="form-control my-2" name="sample_name" id="sample_name_box">
+                        <label for="edit_sample_name_box">New sample name</label><br>
+                        <input type="text" class="form-control my-2" name="sample_name" id="edit_sample_name_box">
                     </div>
                     <div class="col">
                         <label for="parent_select">New parent</label>
@@ -87,7 +89,8 @@
                 <div class="row">
                     <div class="col">
                         <label for="creation_method">Creation Method</label>
-                        <select name="creation_method" class="form-select my-2" aria-label="Select creation method">
+                        <select name="creation_method" class="form-select my-2" aria-label="Select creation method"
+                                id="edit_creation_method">
                             {% for method in methods %}
                                 <option {%  if loop.index == 1 %}selected{% endif %} value="{{ method.name }}">{{ method.name }}</option>
                             {% endfor %}
@@ -95,7 +98,7 @@
                     </div>
                     <div class="col">
                         <label for="creation_method_url">Link to creation method details</label>
-                        <input type="text" class="form-control my-2" name="creation_method_url" id="creation_method_url">
+                        <input type="text" class="form-control my-2" name="creation_method_url" id="edit_creation_method_url">
                     </div>
                     <div class="col my-3 d-flex">
                         <button type="submit" class="btn btn-primary align-self-end" name="submit" value="rename">Save changes</button>
@@ -192,8 +195,6 @@
 
     </script>
 
-
-
     <script>
         // This script works on the edit part of the page to populate the parent select element.
         // This is done to exclude the selected sample from the parent selection list since a sample cannot
@@ -217,7 +218,45 @@
                 }
             }
         }
+    </script>
 
+    <script>
+        // This script works on the edit part of the page to populate the selection boxes with existing values.
+        sample_select = document.querySelectorAll('#edit_sample_selection')[0];
+        sample_select.addEventListener('change', update_edit_boxes)
+
+        function update_edit_boxes() {
+            const selected_sample_id = sample_select.value
+            request_sample_details(selected_sample_id)
+        }
+
+        function request_sample_details(sample_id) {
+            // Send the id of the sample back to flask to get information about the sample.
+            let request = new XMLHttpRequest();
+            request.open('POST', '_request_sample_details', true);
+            request.setRequestHeader('Content-Type', 'text; charset=UTF-8');
+
+            request.onload = add_sample_details_to_form;
+            request.send(sample_id);
+        }
+
+        function add_sample_details_to_form() {
+            if (this.status >= 200 && this.status < 400) {
+                const sample_details = JSON.parse(this.response);
+
+                const new_name_box = document.querySelectorAll('#edit_sample_name_box')[0];
+                new_name_box.value = sample_details["name"]
+
+                const sample_parent = document.querySelectorAll('#edit_parent_select')[0];
+                activate_select_option(sample_parent, sample_details["parent"])
+
+                const creation_method = document.querySelectorAll('#edit_creation_method')[0];
+                activate_select_option(creation_method, sample_details["creation_type"])
+
+                const creation_link = document.querySelectorAll('#edit_creation_method_url')[0];
+                creation_link.value = sample_details["creation_url"]
+            }
+        }
     </script>
 
 {% endblock %}

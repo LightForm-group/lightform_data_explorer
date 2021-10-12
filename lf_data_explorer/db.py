@@ -1,3 +1,5 @@
+import json
+
 import flask_bcrypt
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -40,6 +42,10 @@ class Sample(db.Model):
 
     def __str__(self):
         return self.name
+
+    def to_json(self) -> str:
+        return json.dumps({"name": self.name, "creation_type": str(self.creation_type),
+                           "creation_url": str(self.creation_url), "parent": str(self.parent)})
 
 
 class SampleImage(db.Model):

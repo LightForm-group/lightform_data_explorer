@@ -242,6 +242,14 @@ def _request_sample_stats():
     return Response(stats, status=201, mimetype='application/json')
 
 
+@app.route('/samples/_request_sample_details', methods=['POST'])
+def _request_sample_details():
+    sample_id = int(request.data)
+    sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
+
+    return Response(sample.to_json(), status=201, mimetype='application/json')
+
+
 @app.route('/about')
 def about():
     return render_template('about.html')
