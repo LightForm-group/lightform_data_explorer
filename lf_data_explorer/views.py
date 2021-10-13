@@ -152,6 +152,15 @@ def experiment_management():
             return render_template('experiment_management.html', all_experiments=all_experiments)
 
 
+@app.route('/experiments/_request_experiment_stats', methods=['POST'])
+@login_required
+def _request_experiment_stats():
+    experiment_id = int(request.data)
+    experiment = lf_data_explorer.queries.experiment.get_experiment_by_id(experiment_id)
+
+    return Response(experiment.to_json(), status=201, mimetype='application/json')
+
+
 @app.route('/measurements/manage', methods=['POST', 'GET'])
 @login_required
 def measurement_management():
@@ -184,7 +193,8 @@ def measurement_management():
 
 
 @app.route('/measurements/_request_measurements', methods=['POST'])
-def request_measurements():
+@login_required
+def _request_measurements():
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
 
@@ -233,6 +243,7 @@ def add_image(sample_id: int):
 
 
 @app.route('/samples/_request_sample_stats', methods=['POST'])
+@login_required
 def _request_sample_stats():
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
@@ -243,6 +254,7 @@ def _request_sample_stats():
 
 
 @app.route('/samples/_request_sample_details', methods=['POST'])
+@login_required
 def _request_sample_details():
     sample_id = int(request.data)
     sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)

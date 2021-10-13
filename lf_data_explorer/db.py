@@ -30,7 +30,8 @@ class User(UserMixin, db.Model):
 class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
-    parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"))
+    parent_sample = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE",
+                                                        ondelete="CASCADE"))
     creation_type = db.Column(db.String(20))
     creation_url = db.Column(db.String(200))
     images = db.relationship('SampleImage', backref='sample', lazy=True)
@@ -51,8 +52,8 @@ class Sample(db.Model):
 class SampleImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(1000), nullable=False)
-    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"),
-                          nullable=False)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE",
+                                                    ondelete="CASCADE"), nullable=False)
 
     def __repr__(self):
         return f'Image: {self.path}'
@@ -69,13 +70,16 @@ class Experiment(db.Model):
     def __str__(self):
         return self.name
 
+    def to_json(self) -> str:
+        return json.dumps({"name": self.name, "num_measurements": len(self.measurements)})
+
 
 class Measurement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE", ondelete="CASCADE"),
-                          nullable=False)
-    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.id', onupdate="CASCADE", ondelete="CASCADE"),
-                              nullable=False)
+    sample_id = db.Column(db.Integer, db.ForeignKey('sample.id', onupdate="CASCADE",
+                                                    ondelete="CASCADE"), nullable=False)
+    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.id', onupdate="CASCADE",
+                                                        ondelete="CASCADE"), nullable=False)
     url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):

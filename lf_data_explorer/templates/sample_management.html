@@ -97,7 +97,7 @@
                         </select>
                     </div>
                     <div class="col">
-                        <label for="creation_method_url">Link to creation method details</label>
+                        <label for="edit_creation_method_url">Link to creation method details</label>
                         <input type="text" class="form-control my-2" name="creation_method_url" id="edit_creation_method_url">
                     </div>
                     <div class="col my-3 d-flex">
@@ -107,6 +107,10 @@
             </form>
         </div>
         <div class="tab-pane fade" id="delete" role="tabpanel" aria-labelledby="delete-tab">
+
+            {# To implement a modal confirmation box, the delete sample button is just a link to open the modal. The
+            confirmation button of the modal is then the submit button for the form. The warning in the modal does an
+            ajax request with the below script to get the nubmer of experiments. #}
             <form class="row my-4" action="{{ url_for('sample_management') }}" method="POST" id="delete_sample_form">
                 <h4>Delete sample</h4>
                 <div class="col">
@@ -143,8 +147,6 @@
             </form>
         </div>
     </div>
-
-
 
     <script>
         const confirmation_modal = document.getElementById('delete_sample_modal')

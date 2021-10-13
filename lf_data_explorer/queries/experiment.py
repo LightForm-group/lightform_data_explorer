@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import sqlalchemy.exc
 
@@ -10,6 +10,10 @@ from lf_data_explorer.utilities import Result
 def get_all_experiments() -> List[Experiment]:
     experiments = Experiment.query.all()
     return sorted(experiments, key=str)
+
+
+def get_experiment_by_id(experiment_id: int) -> Optional[Experiment]:
+    return Experiment.query.filter_by(id=experiment_id).first()
 
 
 def delete_experiment(experiment_id: int) -> Result:
