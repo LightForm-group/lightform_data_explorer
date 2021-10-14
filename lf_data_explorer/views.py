@@ -18,7 +18,9 @@ from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_sa
 
 @app.route('/')
 def index():
-    all_samples = lf_data_explorer.queries.sample.get_all_samples()
+    all_samples = sorted(lf_data_explorer.queries.sample.get_all_samples())
+    for sample in all_samples:
+        sample.children = sorted(sample.children)
     return render_template("index.html", all_samples=all_samples, methods=sample_prep_methods)
 
 

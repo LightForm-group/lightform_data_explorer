@@ -10,7 +10,7 @@ from lf_data_explorer.utilities import Result
 
 def get_all_samples() -> List[Sample]:
     samples = Sample.query.all()
-    return sorted(samples, key=str)
+    return sorted(samples)
 
 
 def get_sample_by_name(sample_name: str) -> Optional[Sample]:

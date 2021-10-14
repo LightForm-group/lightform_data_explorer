@@ -1,4 +1,5 @@
 import json
+from typing import List, Union
 
 import flask_bcrypt
 from flask_login import UserMixin
@@ -43,6 +44,50 @@ class Sample(db.Model):
 
     def __str__(self):
         return self.name
+
+    def __lt__(self, other):
+        """A special less than comparator which attempts to sort samples by their names
+        treating any numbers contained within the name as numbers not strings."""
+
+        self_len = len(self.name.split("-"))
+        other_len = len(other.name.split("-"))
+        # If a name has fewer parts then it is lesser
+        if self_len < other_len:
+            return True
+        elif other_len < self_len:
+            return False
+
+        self_parts = self.digits_to_int(self.name.split("-"))
+        other_parts = self.digits_to_int(other.name.split("-"))
+
+        # If a name has the same number of parts then compare the parts
+        for self_part, other_part in zip(self_parts, other_parts):
+            if isinstance(self_part, type(other_part)):
+                # If the parts are of the same type then compare them
+                if self_part < other_part:
+                    return True
+                elif self_part > other_part:
+                    return False
+                # If the parts are identical then consider the nex parts.
+            else:
+                # If parts are of different type then the string part is lesser
+                if isinstance(self_part, str):
+                    return True
+                else:
+                    return False
+        # If all parts are identical return True
+        return True
+
+    @staticmethod
+    def digits_to_int(string_list: List[str]) -> List[Union[int, str]]:
+        """Given a list of strings, convert any numerical strings to integers."""
+        converted_list = []
+        for x in string_list:
+            if x.isdigit():
+                converted_list.append(int(x))
+            else:
+                converted_list.append(x)
+        return converted_list
 
     def to_json(self) -> str:
         return json.dumps({"name": self.name, "creation_type": str(self.creation_type),
