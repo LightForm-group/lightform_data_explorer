@@ -10,6 +10,8 @@ from lf_data_explorer.utilities import Result
 
 def get_all_samples() -> List[Sample]:
     samples = Sample.query.all()
+    for sample in samples:
+        sample.children = sorted(sample.children)
     return sorted(samples)
 
 

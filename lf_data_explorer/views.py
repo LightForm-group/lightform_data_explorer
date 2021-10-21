@@ -13,14 +13,12 @@ from lf_data_explorer import app, utilities, User
 
 from lf_data_explorer.queries.queries import add_new_image
 from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url, \
-    sample_prep_methods
+    sample_prep_methods, node_types
 
 
 @app.route('/')
 def index():
     all_samples = sorted(lf_data_explorer.queries.sample.get_all_samples())
-    for sample in all_samples:
-        sample.children = sorted(sample.children)
     return render_template("index.html", all_samples=all_samples, methods=sample_prep_methods)
 
 
@@ -215,9 +213,12 @@ def samples():
 def select_sample(sample_id: int):
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
+
         selected_sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
+
         return render_template('samples.html', all_samples=all_samples,
-                               current_sample=selected_sample)
+                               current_sample=selected_sample, methods=sample_prep_methods,
+                               node_types=node_types)
 
 
 @app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])

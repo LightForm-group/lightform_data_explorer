@@ -47,10 +47,13 @@ def is_safe_url(target):
 
 
 @dataclass()
-class Method:
+class Label:
     name: str
     colour: str
 
 
-sample_prep_methods = [Method("Unknown", "grey"), Method("Forging", "red"),
-                       Method("Rolling", "green"), Method("Cutting", "blue")]
+sample_prep_methods = [Label("Unknown", "grey"), Label("Forging", "red"),
+                       Label("Rolling", "green"), Label("Cutting", "blue")]
+
+node_types = [Label("Current", '#7cc95d'), Label("Parent", '#c95d5d'),
+              Label("Child", '#5d98c9')]
