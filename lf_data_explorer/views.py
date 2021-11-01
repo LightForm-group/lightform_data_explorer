@@ -1,15 +1,13 @@
 import os
 
-from flask_login import login_user, login_required, current_user, logout_user
 from flask import render_template, request, redirect, flash, url_for, Response, abort
 from werkzeug.utils import secure_filename
 
 import lf_data_explorer.queries.measurement
 import lf_data_explorer.queries.sample
-import lf_data_explorer.queries.user
 import lf_data_explorer.queries.experiment
 
-from lf_data_explorer import app, utilities, User
+from lf_data_explorer import app, utilities
 
 from lf_data_explorer.queries.queries import add_new_image
 from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url, \
@@ -22,53 +20,6 @@ def index():
     return render_template("index.html", all_samples=all_samples, methods=sample_prep_methods)
 
 
-@app.route('/admin', methods=['POST', 'GET'])
-def admin():
-    if request.method == "GET":
-        if current_user.is_authenticated:
-            flash(f"Already logged in as: {current_user.username}")
-            return redirect(url_for('index'))
-        return render_template("admin.html")
-    else:
-        user = User.query.filter_by(username=request.form["username"]).first()
-        if user:
-            if user.is_active:
-                if user.validate_password(request.form["password"]):
-                    login_user(user)
-                    flash('Logged in successfully.')
-
-                    next_page = request.args.get('next')
-                    if not is_safe_url(next_page):
-                        return abort(400)
-
-                    return redirect(next_page or url_for('index'))
-
-        flash_result(Result(False, "Incorrect username or password."))
-        return redirect(request.referrer)
-
-
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    if request.method == "GET":
-        return render_template("register.html")
-    else:
-        if request.form["password"] != request.form["confirm_password"]:
-            flash_result(Result(False, "Passwords do not match."))
-        result = lf_data_explorer.queries.user.new_user(request.form["username"],
-                                                        request.form["password"])
-
-        flash_result(result)
-        return render_template("register.html")
-
-
-@app.route('/signout')
-@login_required
-def signout():
-    logout_user()
-    flash("Successfully logged out.")
-    return redirect(url_for('index'))
-
-
 @app.route('/experiments')
 def experiments():
     all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
@@ -77,7 +28,6 @@ def experiments():
 
 
 @app.route('/samples/manage', methods=['POST', 'GET'])
-@login_required
 def sample_management():
     if request.method == "GET":
         return _render_sample_management()
@@ -123,7 +73,6 @@ def _render_sample_management():
 
 
 @app.route('/experiments/manage', methods=['POST', 'GET'])
-@login_required
 def experiment_management():
     if request.method == "GET":
         all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
@@ -153,7 +102,6 @@ def experiment_management():
 
 
 @app.route('/experiments/_request_experiment_stats', methods=['POST'])
-@login_required
 def _request_experiment_stats():
     experiment_id = int(request.data)
     experiment = lf_data_explorer.queries.experiment.get_experiment_by_id(experiment_id)
@@ -162,7 +110,6 @@ def _request_experiment_stats():
 
 
 @app.route('/measurements/manage', methods=['POST', 'GET'])
-@login_required
 def measurement_management():
     if request.method == "GET":
         all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
@@ -193,7 +140,6 @@ def measurement_management():
 
 
 @app.route('/measurements/_request_measurements', methods=['POST'])
-@login_required
 def _request_measurements():
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
@@ -222,7 +168,6 @@ def select_sample(sample_id: int):
 
 
 @app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])
-@login_required
 def add_image(sample_id: int):
     if request.method == "GET":
         sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
@@ -246,7 +191,6 @@ def add_image(sample_id: int):
 
 
 @app.route('/samples/_request_sample_stats', methods=['POST'])
-@login_required
 def _request_sample_stats():
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
@@ -257,7 +201,6 @@ def _request_sample_stats():
 
 
 @app.route('/samples/_request_sample_details', methods=['POST'])
-@login_required
 def _request_sample_details():
     sample_id = int(request.data)
     sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)

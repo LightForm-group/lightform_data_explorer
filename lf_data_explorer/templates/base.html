@@ -38,20 +38,17 @@
                                         class="nav-link{% if id == active_page %} active{% endif %}">{{ caption|e }}</a>
                 </li>
             {% endfor %}
-            {% if current_user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Manage
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{{ url_for('sample_management') }}">Samples</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('experiment_management') }}">Experiments</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('measurement_management') }}">Measurements</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('signout') }}">Sign Out</a></li>
-                    </ul>
-                </li>
-            {% endif %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    Manage
+                </a>
+                <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="{{ url_for('sample_management') }}">Samples</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('experiment_management') }}">Experiments</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('measurement_management') }}">Measurements</a></li>
+                </ul>
+            </li>
         </ul>
     </header>
 </div>

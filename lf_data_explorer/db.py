@@ -1,8 +1,6 @@
 import json
 from typing import List, Union
 
-import flask_bcrypt
-from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
@@ -16,16 +14,6 @@ def setup_db(app: Flask, db_instance: SQLAlchemy):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_config["uri"]
     db_instance.init_app(app)
-
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(40), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
-
-    def validate_password(self, plaintext: str):
-        return flask_bcrypt.check_password_hash(self.password_hash, plaintext)
 
 
 class Sample(db.Model):
