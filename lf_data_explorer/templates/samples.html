@@ -30,10 +30,12 @@
                         <div class="col">
                             <h3>Sample Images</h3>
                         </div>
-                        <div class="col-4">
-                            <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}"
-                               role="button"><i class="bi-plus-circle me-2"></i>Add new image</a>
-                        </div>
+                        {% if "FREEZER" not in config %}
+                            <div class="col-4">
+                                <a class="btn btn-primary" href="{{ url_for('add_image', sample_id=current_sample.id) }}"
+                                   role="button"><i class="bi-plus-circle me-2"></i>Add new image</a>
+                            </div>
+                        {% endif %}
                     </div>
                     {% if current_sample.images %}
                         <link rel="stylesheet"

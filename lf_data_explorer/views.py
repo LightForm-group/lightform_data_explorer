@@ -1,6 +1,7 @@
 import os
 
-from flask import render_template, request, redirect, flash, url_for, Response, abort
+import flask
+from flask import render_template, request, redirect, flash, url_for, Response, make_response
 from werkzeug.utils import secure_filename
 
 import lf_data_explorer.queries.measurement
@@ -10,25 +11,30 @@ import lf_data_explorer.queries.experiment
 from lf_data_explorer import app, utilities
 
 from lf_data_explorer.queries.queries import add_new_image
-from lf_data_explorer.utilities import allowed_file, flash_result, Result, is_safe_url, \
-    sample_prep_methods, node_types
+from lf_data_explorer.utilities import allowed_file, flash_result, sample_prep_methods, node_types
 
 
-@app.route('/')
-def index():
+def html_response(response) -> flask.Response:
+    return flask.make_response((response, 200, {'Content-Type': 'text/html; charset=utf-8'}))
+
+
+@app.route('/', methods=["GET"])
+def index() -> flask.Response:
     all_samples = sorted(lf_data_explorer.queries.sample.get_all_samples())
-    return render_template("index.html", all_samples=all_samples, methods=sample_prep_methods)
+    return html_response(render_template("index.html", all_samples=all_samples,
+                                         methods=sample_prep_methods))
 
 
-@app.route('/experiments')
-def experiments():
+@app.route('/experiments/', methods=["GET"])
+def experiments() -> flask.Response:
     all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
-    return render_template("experiments.html", experiments=all_experiments, all_samples=all_samples)
+    return html_response(render_template("experiments.html", experiments=all_experiments,
+                                         all_samples=all_samples))
 
 
 @app.route('/samples/manage', methods=['POST', 'GET'])
-def sample_management():
+def sample_management() -> flask.Response:
     if request.method == "GET":
         return _render_sample_management()
     else:
@@ -66,43 +72,45 @@ def sample_management():
             return _render_sample_management()
 
 
-def _render_sample_management():
+def _render_sample_management() -> flask.Response:
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
-    return render_template('sample_management.html', all_samples=all_samples,
-                           methods=sample_prep_methods)
+    return html_response(render_template('sample_management.html', all_samples=all_samples,
+                                         methods=sample_prep_methods))
 
 
 @app.route('/experiments/manage', methods=['POST', 'GET'])
-def experiment_management():
+def experiment_management() -> flask.Response:
     if request.method == "GET":
-        all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-        return render_template('experiment_management.html', all_experiments=all_experiments)
+        return _render_experiment_management()
     else:
         form_button = request.form["submit"]
         if form_button == "add":
             new_name = request.form['experiment_name']
             result = lf_data_explorer.queries.experiment.add_new_experiment(new_name)
             flash_result(result)
-            all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-            return render_template('experiment_management.html', all_experiments=all_experiments)
+            return _render_experiment_management()
         elif form_button == "rename":
             experiment_id = int(request.form["experiment_selection"])
             new_experiment_name = request.form["new_experiment_name"]
-            result = lf_data_explorer.queries.experiment.rename_experiment(experiment_id, new_experiment_name)
+            result = lf_data_explorer.queries.experiment.rename_experiment(experiment_id,
+                                                                           new_experiment_name)
             flash_result(result)
-            all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-            return render_template('experiment_management.html', all_experiments=all_experiments)
+            return _render_experiment_management()
         elif form_button == "delete":
             experiment_id = int(request.form["experiment_selection"])
             result = lf_data_explorer.queries.experiment.delete_experiment(experiment_id)
             flash_result(result)
+            return _render_experiment_management()
 
-            all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-            return render_template('experiment_management.html', all_experiments=all_experiments)
+
+def _render_experiment_management() -> flask.Response:
+    all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
+    return html_response(render_template('experiment_management.html',
+                                         all_experiments=all_experiments))
 
 
 @app.route('/experiments/_request_experiment_stats', methods=['POST'])
-def _request_experiment_stats():
+def _request_experiment_stats() -> flask.Response:
     experiment_id = int(request.data)
     experiment = lf_data_explorer.queries.experiment.get_experiment_by_id(experiment_id)
 
@@ -110,37 +118,37 @@ def _request_experiment_stats():
 
 
 @app.route('/measurements/manage', methods=['POST', 'GET'])
-def measurement_management():
+def measurement_management() -> flask.Response:
     if request.method == "GET":
-        all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-        all_samples = lf_data_explorer.queries.sample.get_all_samples()
-        return render_template('measurement_management.html', all_experiments=all_experiments,
-                               all_samples=all_samples)
+        return _render_measurement_management()
     else:
         form_button = request.form["submit"]
         if form_button == "add":
             sample_id = int(request.form['sample_selection'])
             experiment_id = int(request.form['experiment_selection'])
             url = request.form["url"]
-            result = lf_data_explorer.queries.measurement.add_measurement(sample_id, experiment_id, url)
+            result = lf_data_explorer.queries.measurement.add_measurement(sample_id, experiment_id,
+                                                                          url)
             flash_result(result)
-            all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-            all_samples = lf_data_explorer.queries.sample.get_all_samples()
-            return render_template('measurement_management.html', all_experiments=all_experiments,
-                                   all_samples=all_samples)
+            return _render_measurement_management()
         elif form_button == "delete":
             sample_id = int(request.form['delete_sample_selection'])
             experiment_id = int(request.form['delete_measurement_selection'])
-            result = lf_data_explorer.queries.measurement.delete_measurement(sample_id, experiment_id)
+            result = lf_data_explorer.queries.measurement.delete_measurement(sample_id,
+                                                                             experiment_id)
             flash_result(result)
-            all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
-            all_samples = lf_data_explorer.queries.sample.get_all_samples()
-            return render_template('measurement_management.html', all_experiments=all_experiments,
-                                   all_samples=all_samples)
+            return _render_measurement_management()
+
+
+def _render_measurement_management() -> flask.Response:
+    all_experiments = lf_data_explorer.queries.experiment.get_all_experiments()
+    all_samples = lf_data_explorer.queries.sample.get_all_samples()
+    return html_response(render_template('measurement_management.html',
+                                         all_experiments=all_experiments, all_samples=all_samples))
 
 
 @app.route('/measurements/_request_measurements', methods=['POST'])
-def _request_measurements():
+def _request_measurements() -> flask.Response:
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
 
@@ -148,30 +156,30 @@ def _request_measurements():
                     mimetype='application/json')
 
 
-@app.route('/samples', methods=['POST', 'GET'], strict_slashes=False)
-def samples():
+@app.route('/samples/', methods=['POST', 'GET'], strict_slashes=False)
+def samples() -> flask.Response:
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
 
-    return render_template('samples.html', all_samples=all_samples)
+    return html_response(render_template('samples.html', all_samples=all_samples))
 
 
 @app.route('/samples/<sample_id>', methods=['POST', 'GET'])
-def select_sample(sample_id: int):
+def select_sample(sample_id: int) -> flask.Response:
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
 
         selected_sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
 
-        return render_template('samples.html', all_samples=all_samples,
-                               current_sample=selected_sample, methods=sample_prep_methods,
-                               node_types=node_types)
+        return html_response(render_template('samples.html', all_samples=all_samples,
+                                             current_sample=selected_sample,
+                                             methods=sample_prep_methods, node_types=node_types))
 
 
 @app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])
-def add_image(sample_id: int):
+def add_image(sample_id: int) -> flask.Response:
     if request.method == "GET":
         sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
-        return render_template("add_image.html", sample=sample)
+        return html_response(render_template("add_image.html", sample=sample))
     else:
 
         # check if the post request has the file part
@@ -191,7 +199,7 @@ def add_image(sample_id: int):
 
 
 @app.route('/samples/_request_sample_stats', methods=['POST'])
-def _request_sample_stats():
+def _request_sample_stats() -> flask.Response:
     sample_id = int(request.data)
     measurements = lf_data_explorer.queries.sample.get_sample_measurements(sample_id)
     children = lf_data_explorer.queries.sample.get_sample_children(sample_id)
@@ -201,7 +209,7 @@ def _request_sample_stats():
 
 
 @app.route('/samples/_request_sample_details', methods=['POST'])
-def _request_sample_details():
+def _request_sample_details() -> flask.Response:
     sample_id = int(request.data)
     sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
 
@@ -209,5 +217,5 @@ def _request_sample_details():
 
 
 @app.route('/about')
-def about():
-    return render_template('about.html')
+def about() -> flask.Response:
+    return html_response(render_template('about.html'))
