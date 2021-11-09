@@ -5,7 +5,7 @@
         <h2>Add image for: "{{ sample.name }}"</h2>
     </div>
 
-    <form action="{{ url_for('add_image', sample_id=sample.id) }}" enctype=multipart/form-data method="post">
+    <form action="{{ url_for('add_image', sample_name=sample.name) }}" enctype=multipart/form-data method="post">
         <div class="form-group my-3">
             <label for="image_path_box">Sample path</label>
             <input type="file" class="form-control" name="image_path" id="image_path_box">

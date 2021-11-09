@@ -160,25 +160,26 @@ def _request_measurements() -> flask.Response:
 def samples() -> flask.Response:
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
 
-    return html_response(render_template('samples.html', all_samples=all_samples))
+    return html_response(render_template('sample_details.html', all_samples=all_samples,
+                                         methods=sample_prep_methods))
 
 
-@app.route('/samples/<sample_id>', methods=['POST', 'GET'])
-def select_sample(sample_id: int) -> flask.Response:
+@app.route('/samples/<sample_name>', methods=['POST', 'GET'])
+def select_sample(sample_name: str) -> flask.Response:
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
 
-        selected_sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
+        selected_sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
 
-        return html_response(render_template('samples.html', all_samples=all_samples,
+        return html_response(render_template('sample_relationships.html', all_samples=all_samples,
                                              current_sample=selected_sample,
                                              methods=sample_prep_methods, node_types=node_types))
 
 
-@app.route('/samples/<sample_id>/new_image', methods=['POST', 'GET'])
-def add_image(sample_id: int) -> flask.Response:
+@app.route('/samples/<sample_name>/new_image', methods=['POST', 'GET'])
+def add_image(sample_name: str) -> flask.Response:
     if request.method == "GET":
-        sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
+        sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
         return html_response(render_template("add_image.html", sample=sample))
     else:
 
@@ -191,11 +192,12 @@ def add_image(sample_id: int) -> flask.Response:
             flash('No file selected.')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            add_new_image(filename, sample_id)
-            return redirect(url_for("select_sample", sample_id=sample_id))
+            add_new_image(filename, sample.id)
+            return redirect(url_for("select_sample", sample_name=sample_name))
 
 
 @app.route('/samples/_request_sample_stats', methods=['POST'])
