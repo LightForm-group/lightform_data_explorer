@@ -160,7 +160,7 @@ def _request_measurements() -> flask.Response:
 def samples() -> flask.Response:
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
 
-    return html_response(render_template('sample_details.html', all_samples=all_samples,
+    return html_response(render_template('sample_overview.html', all_samples=all_samples,
                                          methods=sample_prep_methods))
 
 
@@ -171,7 +171,7 @@ def select_sample(sample_name: str) -> flask.Response:
 
         selected_sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
 
-        return html_response(render_template('sample_relationships.html', all_samples=all_samples,
+        return html_response(render_template('sample_details.html', all_samples=all_samples,
                                              current_sample=selected_sample,
                                              methods=sample_prep_methods, node_types=node_types))
 
