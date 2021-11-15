@@ -18,6 +18,14 @@ def html_response(response) -> flask.Response:
     return flask.make_response((response, 200, {'Content-Type': 'text/html; charset=utf-8'}))
 
 
+# The URL routes are slightly different than they would normally be for a Flask app. This is to
+# make freezing and serving the pages on github work.
+# The route for page which has subpages (e.g. /experiments/ or /measurements/) must end with a
+# slash. This causes an index.html page to be generated to serve the content on that page.
+# The route for any other page must end with .html to make sure the static pages generated
+# have this extension. Normally a webserver would be happy to serve the /about page, but github
+# doesn't so it explicitly needs the .html
+
 @app.route('/', methods=["GET"])
 def index() -> flask.Response:
     all_samples = sorted(lf_data_explorer.queries.sample.get_all_samples())
@@ -164,7 +172,7 @@ def samples() -> flask.Response:
                                          methods=sample_prep_methods))
 
 
-@app.route('/samples/<sample_name>', methods=['POST', 'GET'])
+@app.route('/samples/<sample_name>.html', methods=['POST', 'GET'])
 def select_sample(sample_name: str) -> flask.Response:
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
@@ -218,6 +226,6 @@ def _request_sample_details() -> flask.Response:
     return Response(sample.to_json(), status=201, mimetype='application/json')
 
 
-@app.route('/about')
+@app.route('/about.html')
 def about() -> flask.Response:
     return html_response(render_template('about.html'))
