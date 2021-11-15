@@ -1,7 +1,7 @@
 import os
 
 import flask
-from flask import render_template, request, redirect, flash, url_for, Response, make_response
+from flask import render_template, request, redirect, flash, url_for, Response
 from werkzeug.utils import secure_filename
 
 import lf_data_explorer.queries.measurement

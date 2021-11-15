@@ -4,15 +4,10 @@ from typing import List, Union
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
-from lf_data_explorer.utilities import load_config
-
 db = SQLAlchemy()
 
 
 def setup_db(app: Flask, db_instance: SQLAlchemy):
-    db_config = load_config()["database"]
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_config["uri"]
     db_instance.init_app(app)
 
 
