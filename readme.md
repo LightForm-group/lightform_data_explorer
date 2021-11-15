@@ -85,7 +85,9 @@ Note that to activate the environment on unix is `source ./venv/bin/activate`
 
 If it is not already - activate your virtual environment and then run a Flask server with the command:
 
-```flask runserver```
+```
+flask runserver
+```
 
 This will give you a local address which you can click or paste into your browser. At this point you 
 are running a copy of the app on your local machine. You can input new data into the app using the `manage`
@@ -95,7 +97,9 @@ folder you cloned earlier.
 You now need to Freeze the pages you have generated to upload them to GitHub. You can do this by navigating
 to the `lightform_data_explorer` folder and running:
 
-```python freeze.py```
+```
+python freeze.py
+```
 
 This should generate/update the static .html pages in the `tifun-data-explorer` folder. Now commit and push 
 the changes to GitHub:
