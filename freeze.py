@@ -9,8 +9,6 @@ freezer = Freezer(app)
 
 if __name__ == '__main__':
     freezer.freeze()
-    # Use this line to run a server to check pages before upload.
-    freezer.run()
 
 
 @freezer.register_generator
