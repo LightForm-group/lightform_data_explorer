@@ -55,9 +55,11 @@ should be generated.
 ### Updating a data explorer for the first time
 
 If you want to update an existing data explorer you will need to clone two repositories, this one and the
-data one. For this example we will use the TiFun project as an example. You only need to do this step once,
+data one. For this example we will use the TiFUN project as an example. You only need to do this step once,
 on subsequent times you want to update the data you can skip straight to the 
 [updating data section](#updating-the-data-and-uploading-to-github).
+
+Instructions are provided here for git on the command line but you can use a Git GUI if you prefer.
 
 Find a directory and clone the Flask app:
 ```
@@ -68,34 +70,39 @@ and the data:
 git clone https://github.com/LightForm-group/tifun-data-explorer.git
 ```
 
-Go into the Flask app folder and make a new Python virtual environment, activate it and install the 
+Change directory to the lightform_data_explorer, make a new Python virtual environment, activate it and install the 
 required packages:
 
 ```
 cd lightform_data_explorer
 python -m venv venv
+# Windows
 ./venv/bin/activate
+# Mac/unix
+source ./venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Note that to activate the environment on unix is `source ./venv/bin/activate`
+Note that activating the environemnet has a different syntax depnding on your operating system.
 
 ### Updating the data and uploading to github
 
 If it is not already - activate your virtual environment and then run a Flask server with the command:
 
 ```
-flask runserver
+python run.py
 ```
 
-This will give you a local address which you can click or paste into your browser. At this point you 
-are running a copy of the app on your local machine. You can input new data into the app using the `manage`
-tab in the menu bar. Any data you add will be stored in the `data.db` file in the `tifun-data-explorer` 
+This will give you a prompy with a local ip address that will look something like `http://127.0.0.1:5000/`. 
+Either click this link or copy and paste into into your web browser. 
+At this point you are running a copy of the app on your local machine. You can input new data into the app using 
+the `manage` tab in the menu bar. Any data you add will be stored in the `data.db` file in the `tifun-data-explorer` 
 folder you cloned earlier.
 
-You now need to Freeze the pages you have generated to upload them to GitHub. You can do this by navigating
-to the `lightform_data_explorer` folder and running:
+Once you have finished adding/modifying data, you now need to Freeze the pages you have generated to upload them to 
+GitHub. You can kill the Flask server with `CTRL + C`. To freeze the pages, navigate to the `lightform_data_explorer` 
+folder and run:
 
 ```
 python freeze.py
