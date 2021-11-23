@@ -23,6 +23,9 @@ app.config["FREEZER_DESTINATION_IGNORE"] = ["data.db", ".git", ".gitignore", "RE
 app.config["FREEZER_DESTINATION"] = f"../../{PROJECT_NAME}/"
 app.config["FREEZER_STATIC_IGNORE"] = ["*manage*", "*add_image*"]
 
+# Set options for Jinja templating engine
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
 
 app.url_map.strict_slashes = False
 app.app_context().push()

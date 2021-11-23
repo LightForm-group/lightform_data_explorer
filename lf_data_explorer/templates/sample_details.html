@@ -112,14 +112,12 @@
 
                 {% if current_sample.parent %}
                     {'data': {'id': '{{ current_sample.parent.name }}-{{ current_sample.name }}', 'source': '{{ current_sample.parent.name }}',
-                                'target': '{{ current_sample.name }}'{% if current_sample.creation_url %}, href: '{{ current_sample.creation_url }}'{% endif %}},
-                            'classes': '{{current_sample.creation_type}}' },
+                                'target': '{{ current_sample.name }}', 'classes': '{{current_sample.creation_type}}' },
                 {% endif %}
                 {% if current_sample.children %}
                     {% for child in current_sample.children -%}
                         {'data': {'id': '{{ current_sample.name }}-{{ child.name }}', 'source': '{{ current_sample.name }}',
-                                'target': '{{ child.name }}'{% if child.creation_url %}, href: '{{ child.creation_url }}'{% endif %}},
-                            'classes': '{{child.creation_type}}' },
+                                'target': '{{ child.name }}', 'classes': '{{child.creation_type}}' },
                     {% endfor %}
                 {% endif %}
 
@@ -185,7 +183,7 @@
 
         });
 
-        cy.on('tap', 'node, edge', function () {
+        cy.on('tap', 'node', function () {
             if (this.data('href') !== undefined) {
                 window.location.href = this.data('href');
             }

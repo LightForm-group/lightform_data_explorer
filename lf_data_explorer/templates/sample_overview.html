@@ -29,8 +29,7 @@
                     {% for sample in all_samples %}
                         <option value="{{ url_for('select_sample', sample_name=sample.name) }}"
                                 {% if current_sample %}
-                                {% if current_sample.name == sample.name %}selected="selected"{% endif %}
-                                {% endif %}>{{ sample.name }}</option>
+                                    {% if current_sample.name == sample.name %}selected="selected"{% endif %}{% endif %}>{{ sample.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -54,8 +53,7 @@
                 {% for sample in all_samples -%}
                     {% for child in sample.children -%}
                         {'data': {'id': '{{ sample.name }}-{{ child.name }}', 'source': '{{ sample.name }}',
-                                'target': '{{ child.name }}'{% if child.creation_url %}, href: '{{ child.creation_url }}'{% endif %}},
-                            'classes': '{{child.creation_type}}' },
+                                'target': '{{ child.name }}'}, 'classes': '{{child.creation_type}}' },
                     {% endfor %}
                 {% endfor %}
             ],
@@ -94,10 +92,9 @@
 				    name: 'dagre',
                     spacingFactor: 1.5
 				}
-
         });
 
-        cy.on('tap', 'node, edge', function () {
+        cy.on('tap', 'node', function () {
             if (this.data('href') !== undefined) {
                 window.location.href = this.data('href');
             }
