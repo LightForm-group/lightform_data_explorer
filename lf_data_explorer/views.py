@@ -29,9 +29,7 @@ def html_response(response) -> flask.Response:
 
 @app.route('/', methods=["GET"])
 def index() -> flask.Response:
-    all_samples = sorted(lf_data_explorer.queries.sample.get_all_samples())
-    return html_response(render_template("index.html", all_samples=all_samples,
-                                         methods=sample_prep_methods))
+    return html_response(render_template("index.html"))
 
 
 @app.route('/experiments/', methods=["GET"])
@@ -168,7 +166,7 @@ def _request_measurements() -> flask.Response:
 @app.route('/samples/', methods=['POST', 'GET'], strict_slashes=False)
 def samples() -> flask.Response:
     all_samples = lf_data_explorer.queries.sample.get_all_samples()
-
+    output_network_json(all_samples)
     return html_response(render_template('sample_overview.html', all_samples=all_samples,
                                          methods=sample_prep_methods))
 
@@ -177,8 +175,8 @@ def samples() -> flask.Response:
 def select_sample(sample_name: str) -> flask.Response:
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
-        output_network_json(all_samples)
         selected_sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
+        output_network_json(all_samples)
 
         return html_response(render_template('sample_details.html', all_samples=all_samples,
                                              current_sample=selected_sample,

@@ -93,6 +93,7 @@
     <script src="{{ url_for('static',filename='graphs/cytoscape-dagre.js') }}"></script>
     <script src="{{ url_for('static',filename='graphs/cytoscape_canvas.js') }}"></script>
     <script src="{{ url_for('static',filename='graphs/network-graph.js') }}"></script>
+    <script src="{{ url_for('static',filename='graphs/graph_data.js') }}"></script>
     <script src="{{ url_for('static',filename='graphs/graph_style.js') }}"></script>
 
 
@@ -101,32 +102,8 @@
         var cy = cytoscape({
             pixelRatio: '1',
             container: document.getElementById('graph-container'), // container to render in
-
-            elements: [
-                {data: {id: '{{ current_sample.name }}', href: '{{ url_for('select_sample', sample_name=current_sample.name )}}'}, 'classes': 'current_sample'},
-                {% if current_sample.parent %}
-                    {data: {id: '{{ current_sample.parent.name }}', href: '{{ url_for('select_sample', sample_name=current_sample.parent.name )}}'}, 'classes': 'parent'},
-                {% endif %}
-                {% if current_sample.children %}
-                    {% for child in current_sample.children -%}
-                        {data: {id: '{{ child.name }}', href: '{{ url_for('select_sample', sample_name=child.name )}}'}, 'classes': 'child'},
-                    {% endfor %}
-                {% endif %}
-
-                {% if current_sample.parent %}
-                    {'data': {'id': '{{ current_sample.parent.name }}-{{ current_sample.name }}', 'source': '{{ current_sample.parent.name }}',
-                                'target': '{{ current_sample.name }}'}, 'classes': '{{current_sample.creation_type}}' },
-                {% endif %}
-                {% if current_sample.children %}
-                    {% for child in current_sample.children -%}
-                        {'data': {'id': '{{ current_sample.name }}-{{ child.name }}', 'source': '{{ current_sample.name }}',
-                                'target': '{{ child.name }}'}, 'classes': '{{child.creation_type}}' },
-                    {% endfor %}
-                {% endif %}
-            ],
-
+            elements: data,
             style: style,
-
             layout: {
                 name: 'dagre',
                 spacingFactor: 1.5
@@ -158,8 +135,8 @@
         var font_size
         var line_width
         var line_padding
-        const node_types = {% if node_types %}{{ node_types | tojson }}{% else %}[""]{% endif +%}
-        const methods = {% if methods %}{{ methods | tojson }}{% else %}[""]{% endif %}
+        const node_types = {{ node_types | tojson }}
+        const methods = {{ methods | tojson }}
 
         function canvas_resize() {
             clear_canvas(bottomLayer, ctx)
@@ -167,6 +144,19 @@
             render_node_legend(ctx)
             render_edge_legend(ctx)
         }
+
+        // Selected node + parents and children
+        let current_sample_node = cy.$('#{{current_sample.name}}')
+        let selected_nodes = current_sample_node.closedNeighborhood()
+        // Remove all nodes except selected and its parents and children
+        cy.remove(cy.elements("node").subtract(selected_nodes))
+        current_sample_node.addClass("current_sample")
+        current_sample_node.incomers().addClass("parent")
+        current_sample_node.successors().addClass("child")
+
+        cy.zoom(1.2)
+        cy.center(cy.$('#{{current_sample.name}}'))
+
 
         cy.on("render cyCanvas.resize", canvas_resize)
 

@@ -41,6 +41,8 @@ class Label:
     colour: str
 
 
+# If adding new methods or sample types, you should update graph_style.js to
+# include the class and colour on the network graphs.
 sample_prep_methods = [Label("Unknown", "grey"), Label("Forging", "red"),
                        Label("Rolling", "green"), Label("Cutting", "blue")]
 
@@ -49,6 +51,9 @@ node_types = [Label("Current", '#7cc95d'), Label("Parent", '#c95d5d'),
 
 
 def output_network_json(all_samples: List[Sample]):
+    """This function is run when the app starts and any time the database is updated. It
+    writes node and edge data to a javascript file in JSON format. The data is then accessed
+    by any page which displays a graph."""
     data = {"nodes": [], "edges": []}
 
     for sample in all_samples:
@@ -65,6 +70,6 @@ def output_network_json(all_samples: List[Sample]):
             edge_data["classes"] = child.creation_type
             data["edges"].append(edge_data)
 
-    with open("lf_data_explorer/static/graph_data.js", "w") as output_file:
+    with open("lf_data_explorer/static/graphs/graph_data.js", "w") as output_file:
         output_file.write("data = ")
         json.dump(data, output_file)

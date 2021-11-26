@@ -23,7 +23,7 @@ function render_node_legend(ctx) {
         ctx.beginPath();
         ctx.strokeStyle = node_types[i]["colour"]
         ctx.fillStyle = node_types[i]["colour"]
-        ctx.arc(left + legend_spacing + 0.15 * width, canvas_top + legend_spacing * (i + 2) - line_padding, 10, 0, 2 * Math.PI);
+        ctx.arc(left + legend_spacing + 0.15 * width, canvas_top + legend_spacing * (i + 2) - line_padding, 0.01*width, 0, 2 * Math.PI);
         ctx.stroke()
         ctx.fill()
     }
@@ -47,7 +47,6 @@ function render_edge_legend(ctx) {
 }
 
 function clear_canvas(bottom_layer, ctx) {
-    bottomLayer.resetTransform(ctx);
     bottomLayer.clear(ctx);
     bottomLayer.setTransform(ctx);
 }

@@ -83,8 +83,7 @@
         var font_size
         var line_width
         var line_padding
-        const node_types = {% if node_types %}{{ node_types | tojson }}{% else %}[""]{% endif +%}
-        const methods = {% if methods %}{{ methods | tojson }}{% else %}[""]{% endif %}
+        const methods = {{ methods | tojson }}
 
         cy.on("render cyCanvas.resize", evt => {
             clear_canvas(bottomLayer, ctx)
