@@ -91,9 +91,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
     <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.js"></script>
     <script src="{{ url_for('static',filename='scripts/cytoscape-dagre.js') }}"></script>
-    <script src="https://unpkg.com/cytoscape-canvas/dist/cytoscape-canvas.js"></script>
+    <script src="{{ url_for('static',filename='scripts/cytoscape_canvas.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/network-graph.js') }}"></script>
 
     <script>
+
 
         var cy = cytoscape({
             pixelRatio: '1',
@@ -112,12 +114,12 @@
 
                 {% if current_sample.parent %}
                     {'data': {'id': '{{ current_sample.parent.name }}-{{ current_sample.name }}', 'source': '{{ current_sample.parent.name }}',
-                                'target': '{{ current_sample.name }}', 'classes': '{{current_sample.creation_type}}' },
+                                'target': '{{ current_sample.name }}'}, 'classes': '{{current_sample.creation_type}}' },
                 {% endif %}
                 {% if current_sample.children %}
                     {% for child in current_sample.children -%}
                         {'data': {'id': '{{ current_sample.name }}-{{ child.name }}', 'source': '{{ current_sample.name }}',
-                                'target': '{{ child.name }}', 'classes': '{{child.creation_type}}' },
+                                'target': '{{ child.name }}'}, 'classes': '{{child.creation_type}}' },
                     {% endfor %}
                 {% endif %}
 
@@ -190,62 +192,35 @@
         });
 
         // Draw a legend on a separate canvas over the graph
-        const bottomLayer = cy.cyCanvas({
+        let bottomLayer = cy.cyCanvas({
             zIndex: -1
         });
-        const canvas = bottomLayer.getCanvas();
-        const ctx = canvas.getContext("2d");
+        let canvas = bottomLayer.getCanvas();
+        let ctx = canvas.getContext("2d");
 
-        cy.on("render cyCanvas.resize", evt => {
-            bottomLayer.resetTransform(ctx);
-            bottomLayer.clear(ctx);
-            bottomLayer.setTransform(ctx);
+        var legend_scale = 0.2
+        var canvas_top
+        var left
+        var right
+        var width
+        var height
+        var legend_left
+        var legend_spacing
+        var font_size
+        var line_width
+        var line_padding
+        const node_types = {% if node_types %}{{ node_types | tojson }}{% else %}[""]{% endif +%}
+        const methods = {% if methods %}{{ methods | tojson }}{% else %}[""]{% endif %}
 
-            const top = cy.extent()['y1']
-            const left = cy.extent()['x1']
-            const right = cy.extent()['x2']
-            const width = cy.extent()['w']
-            const height = cy.extent()['h']
-            const legend_scale = 0.2
-            const legend_left = right - width * legend_scale
-            let legend_spacing = height * 0.05
-            let font_size = height / 35
-            let line_width = height / 100
-            let line_padding = (font_size + line_width) / 2
-            ctx.lineWidth = line_width
+        function canvas_resize() {
+            clear_canvas(bottomLayer, ctx)
+            update_variables(cy)
+            render_node_legend(ctx)
+            render_edge_legend(ctx)
+        }
 
-            ctx.fillStyle = "black"
-            ctx.font = `${font_size}px Helvetica`;
-            ctx.fillText("   Sample relationship", legend_left, top + legend_spacing);
-
-            const methods = {% if methods %}{{ methods | tojson }}{% else %}[""]{% endif %}
-
-            for (let i = 0; i < methods.length; i++) {
-                ctx.strokeStyle = methods[i]["colour"];
-                ctx.beginPath();
-                ctx.moveTo(legend_left + width * 0.13, top + legend_spacing * (i + 2) - line_padding);
-                ctx.lineTo(legend_left + width * 0.20, top + legend_spacing * (i + 2) - line_padding);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.fillText(methods[i]["name"], legend_left, top + legend_spacing * (i + 2));
-            }
-
-            const node_types = {% if node_types %}{{ node_types | tojson }}{% else %}[""]{% endif %}
-
-            ctx.fillText("   Node Type", left + legend_spacing, top + legend_spacing);
-            for (let i = 0; i < 3; i++) {
-                ctx.fillStyle = "black"
-                ctx.fillText(`${node_types[i]["name"]} Sample`, left + legend_spacing, top + legend_spacing * (i + 2));
-                ctx.beginPath();
-                ctx.strokeStyle = node_types[i]["colour"]
-                ctx.fillStyle = node_types[i]["colour"]
-                ctx.arc(left + legend_spacing + 0.15 * width, top + legend_spacing * (i + 2) - line_padding, 10, 0, 2 * Math.PI);
-                ctx.stroke()
-                ctx.fill()
-            }
-
-        })
-
+        cy.on("render cyCanvas.resize", canvas_resize)
+    
     </script>
 
 
