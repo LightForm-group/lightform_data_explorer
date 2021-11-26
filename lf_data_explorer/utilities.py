@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import List, TYPE_CHECKING
 
+import flask
 from flask import flash
 
 if TYPE_CHECKING:
-    from lf_data_explorer.db import Measurement
+    from lf_data_explorer.db import Measurement, Sample
 
 
 def allowed_file(filename):
@@ -44,3 +46,25 @@ sample_prep_methods = [Label("Unknown", "grey"), Label("Forging", "red"),
 
 node_types = [Label("Current", '#7cc95d'), Label("Parent", '#c95d5d'),
               Label("Child", '#5d98c9')]
+
+
+def output_network_json(all_samples: List[Sample]):
+    data = {"nodes": [], "edges": []}
+
+    for sample in all_samples:
+        node_data = {"data": {}}
+        node_data["data"]["id"] = sample.name
+        node_data["data"]["href"] = flask.url_for('select_sample', sample_name=sample.name)
+        data["nodes"].append(node_data)
+
+        for child in sample.children:
+            edge_data = {"data": {}}
+            edge_data["data"]["id"] = f'{sample.name}-{child.name}'
+            edge_data["data"]["source"] = sample.name
+            edge_data["data"]["target"] = child.name
+            edge_data["classes"] = child.creation_type
+            data["edges"].append(edge_data)
+
+    with open("lf_data_explorer/static/graph_data.js", "w") as output_file:
+        output_file.write("data = ")
+        json.dump(data, output_file)

@@ -90,12 +90,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
     <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.js"></script>
-    <script src="{{ url_for('static',filename='scripts/cytoscape-dagre.js') }}"></script>
-    <script src="{{ url_for('static',filename='scripts/cytoscape_canvas.js') }}"></script>
-    <script src="{{ url_for('static',filename='scripts/network-graph.js') }}"></script>
+    <script src="{{ url_for('static',filename='graphs/cytoscape-dagre.js') }}"></script>
+    <script src="{{ url_for('static',filename='graphs/cytoscape_canvas.js') }}"></script>
+    <script src="{{ url_for('static',filename='graphs/network-graph.js') }}"></script>
+    <script src="{{ url_for('static',filename='graphs/graph_style.js') }}"></script>
+
 
     <script>
-
 
         var cy = cytoscape({
             pixelRatio: '1',
@@ -122,66 +123,14 @@
                                 'target': '{{ child.name }}'}, 'classes': '{{child.creation_type}}' },
                     {% endfor %}
                 {% endif %}
-
             ],
 
-            style: [ // the stylesheet for the graph
-                {
-                    selector: 'node',
-                    style: {
-                        'background-color': '#666',
-                        'label': 'data(id)',
-                        'font-size': 20
-                    }
-                },
+            style: style,
 
-                {
-                    selector: '.current_sample',
-                    style: {
-                        'background-color': '#7cc95d'
-                    }
-                },
-
-                {
-                    selector: '.parent',
-                    style: {
-                        'background-color': '#c95d5d'
-                    }
-                },
-
-                {
-                    selector: '.child',
-                    style: {
-                        'background-color': '#5d98c9'
-                    }
-                },
-
-                {
-                    selector: 'edge',
-                    style: {
-                        'width': 3,
-                        'line-color': 'grey',
-                        'target-arrow-color': 'grey',
-                        'target-arrow-shape': 'triangle',
-                        'curve-style': 'bezier'
-                    }
-                },
-
-                {% for method in methods %}
-                {
-                    selector: '.{{ method.name }}',
-                    style: {
-                        'line-color': '{{ method.colour }}',
-                        'target-arrow-color': '{{ method.colour }}',
-                    }
-                },
-                {% endfor %}
-            ],
-
-                layout: {
-                    name: 'dagre',
-                    spacingFactor: 1.5
-                }
+            layout: {
+                name: 'dagre',
+                spacingFactor: 1.5
+            }
 
         });
 
@@ -220,7 +169,7 @@
         }
 
         cy.on("render cyCanvas.resize", canvas_resize)
-    
+
     </script>
 
 

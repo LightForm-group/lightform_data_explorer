@@ -13,8 +13,7 @@ function update_variables(cy) {
     line_padding = (font_size + line_width) / 2
 }
 
-function render_edge_legend(ctx) {
-    update_variables(cy)
+function render_node_legend(ctx) {
 
     ctx.lineWidth = line_width
     ctx.fillText("   Node Type", left + legend_spacing, canvas_top + legend_spacing);
@@ -30,7 +29,7 @@ function render_edge_legend(ctx) {
     }
 }
 
-function render_node_legend(ctx) {
+function render_edge_legend(ctx) {
 
     ctx.fillStyle = "black"
     ctx.font = `${font_size}px Helvetica`;

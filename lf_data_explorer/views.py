@@ -11,7 +11,8 @@ import lf_data_explorer.queries.experiment
 from lf_data_explorer import app, utilities
 
 from lf_data_explorer.queries.queries import add_new_image
-from lf_data_explorer.utilities import allowed_file, flash_result, sample_prep_methods, node_types
+from lf_data_explorer.utilities import allowed_file, flash_result, sample_prep_methods, node_types, \
+    output_network_json
 
 
 def html_response(response) -> flask.Response:
@@ -176,7 +177,7 @@ def samples() -> flask.Response:
 def select_sample(sample_name: str) -> flask.Response:
     if request.method == "GET":
         all_samples = lf_data_explorer.queries.sample.get_all_samples()
-
+        output_network_json(all_samples)
         selected_sample = lf_data_explorer.queries.sample.get_sample_by_name(sample_name)
 
         return html_response(render_template('sample_details.html', all_samples=all_samples,

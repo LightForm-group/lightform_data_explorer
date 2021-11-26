@@ -3,3 +3,4 @@
 __pycache__
 /samples.mwb*
 /lf_data_explorer/static/sample_images
+/lf_data_explorer/static/graphs/graph_data.js
