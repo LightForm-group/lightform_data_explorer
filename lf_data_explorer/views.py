@@ -223,8 +223,3 @@ def _request_sample_details() -> flask.Response:
     sample = lf_data_explorer.queries.sample.get_sample_by_id(sample_id)
 
     return Response(sample.to_json(), status=201, mimetype='application/json')
-
-
-@app.route('/about.html')
-def about() -> flask.Response:
-    return html_response(render_template('about.html'))

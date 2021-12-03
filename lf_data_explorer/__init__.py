@@ -1,3 +1,4 @@
+import jinja2
 from flask import Flask
 
 from lf_data_explorer.db import setup_db, db
@@ -19,7 +20,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config["FREEZER_BASE_URL"] = f"http://localhost/{PROJECT_NAME}/"
 app.config["FREEZER_DEFAULT_MIMETYPE"] = "text/html"
 app.config["FREEZER_REMOVE_EXTRA_FILES"] = True
-app.config["FREEZER_DESTINATION_IGNORE"] = ["data.db", ".git", ".gitignore", "README.md"]
+app.config["FREEZER_DESTINATION_IGNORE"] = ["data.db", ".git", ".gitignore", "README.md",
+                                            "/templates", "/.idea"]
 app.config["FREEZER_DESTINATION"] = f"../../{PROJECT_NAME}/"
 app.config["FREEZER_STATIC_IGNORE"] = ["*manage*", "*add_image*"]
 app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
@@ -28,6 +30,11 @@ app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
 # Set options for Jinja templating engine
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
+
+# Set where to look for templates
+my_loader = jinja2.FileSystemLoader([f'../{PROJECT_NAME}/templates',
+                                     'lf_data_explorer/templates'])
+app.jinja_loader = my_loader
 
 app.url_map.strict_slashes = False
 app.app_context().push()

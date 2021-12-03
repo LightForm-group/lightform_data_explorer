@@ -4,3 +4,4 @@ flask-sqlalchemy
 sqlalchemy
 werkzeug
 Frozen-Flask
+jinja2

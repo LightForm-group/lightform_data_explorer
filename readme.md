@@ -34,15 +34,15 @@ inconvenient faff of having to actually maintain a webserver.
 to the [updating section](#updating-a-data-explorer-for-the-first-time).
 
 Fork this repository and then clone it to your machine. Make a new virtual environment and install the 
-packages in `requirements.txt`. Change the `PROJECT_NAME` variable to a new project name that describes 
-your project.
+packages in `requirements.txt`. Change the `PROJECT_NAME` variable in "lf_data_explorer/__init__.py " to a 
+new project name that describes your project.
 
 Run the webserver with `flask runserver` and a new database will be initialised in "../../PROJECT_NAME"
 relative to the root of where you cloned this repository. Close the flask server and run "freeze.py". Note 
 that `freeze.py` has relative references so should be run directly from its containing folder. This will 
 generate the static pages in the same folder as the database.
 
-Navigate to the "../../PROJECT_NAME" folder and initialise a new git repository here. Add a .gitigore with
+Navigate to the "../../PROJECT_NAME" folder and initialise a new git repository here. Add a .gitignore with
 
 ```manage```
 
@@ -51,6 +51,11 @@ Set up a new repository on GitHub called "PROJECT_NAME", add it as a remote for 
 to it. Now go into the settings for that project, activate GitHub pages and set it to serve from the 
 root of the repository (not the docs folder or ghpages branch). Wait a couple of minutes and the pages 
 should be generated.
+
+You can add your own custom front page by creating a "templates" folder in the "PROJECT_NAME" repository
+and copying and pasting templates from the "lf_data_explorer/templates" folder. For an example see [the
+tifun index page](https://github.com/LightForm-group/tifun-data-explorer/tree/main/templates). Any template in
+this folder with the same name as a template in the "lf_data_explorer/templates" folder will override it.
 
 ### Updating a data explorer for the first time
 
