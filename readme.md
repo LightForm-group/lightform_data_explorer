@@ -1,4 +1,4 @@
-# Lightform Data Explorer
+# LightForm Data Explorer
 
 ## Introduction
 
@@ -54,7 +54,7 @@ should be generated.
 
 You can add your own custom front page by creating a "templates" folder in the "PROJECT_NAME" repository
 and copying and pasting templates from the "lf_data_explorer/templates" folder. For an example see [the
-tifun index page](https://github.com/LightForm-group/tifun-data-explorer/tree/main/templates). Any template in
+TIFUN index page](https://github.com/LightForm-group/tifun-data-explorer/tree/main/templates). Any template in
 this folder with the same name as a template in the "lf_data_explorer/templates" folder will override it.
 
 ### Updating a data explorer for the first time
@@ -64,7 +64,7 @@ data one. For this example we will use the TiFUN project as an example. You only
 on subsequent times you want to update the data you can skip straight to the 
 [updating data section](#updating-the-data-and-uploading-to-github).
 
-Instructions are provided here for git on the command line but you can use a Git GUI if you prefer.
+Instructions are provided here for git on the command line, but you can use a Git GUI if you prefer.
 
 Find a directory and clone the Flask app:
 ```
@@ -75,7 +75,7 @@ and the data:
 git clone https://github.com/LightForm-group/tifun-data-explorer.git
 ```
 
-Change directory to the lightform_data_explorer, make a new Python virtual environment, activate it and install the 
+Change directory to "lightform_data_explorer", make a new Python virtual environment, activate it and install the 
 required packages:
 
 ```
@@ -89,7 +89,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Note that activating the environemnet has a different syntax depnding on your operating system.
+Note that activating the environment has a different syntax depending on your operating system.
 
 ### Updating the data and uploading to github
 
@@ -99,21 +99,22 @@ If it is not already - activate your virtual environment and then run a Flask se
 python run.py
 ```
 
-This will give you a prompy with a local ip address that will look something like `http://127.0.0.1:5000/`. 
-Either click this link or copy and paste into into your web browser. 
+This will give you a prompt with a local ip address that will look something like `http://127.0.0.1:5000/`. 
+Either click this link or copy and paste into your web browser. 
 At this point you are running a copy of the app on your local machine. You can input new data into the app using 
 the `manage` tab in the menu bar. Any data you add will be stored in the `data.db` file in the `tifun-data-explorer` 
 folder you cloned earlier.
 
 Once you have finished adding/modifying data, you now need to Freeze the pages you have generated to upload them to 
-GitHub. You can kill the Flask server with `CTRL + C`. To freeze the pages, navigate to the `lightform_data_explorer` 
+GitHub. Kill the Flask server with `CTRL + C`. You must kill the flask server before freezing. To freeze the pages, navigate to the `lightform_data_explorer` 
 folder and run:
 
 ```
 python freeze.py
 ```
 
-This should generate/update the static .html pages in the `tifun-data-explorer` folder. Now commit and push 
+This should generate/update the static .html pages in the `tifun-data-explorer` folder. You __MUST NOT__ be running 
+the Flask server when you run "freeze.py" or this will mess up the links to the sample pages. Now commit and push 
 the changes to GitHub:
 
 ```
@@ -129,5 +130,5 @@ the updates should go live on GitHub at the pages URL.
 ## Development
 
 If you want to modify the app or page templates it may be useful to run Flask with the 
-"FLASK_ENV=development" argument as this makes the Flask server give much more helpful error messages and
+"FLASK_ENV=development" argument as this makes the Flask server give much more helpful error messages, and
 it only runs a bit slower.
