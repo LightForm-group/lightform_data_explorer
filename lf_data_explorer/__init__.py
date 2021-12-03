@@ -22,6 +22,8 @@ app.config["FREEZER_REMOVE_EXTRA_FILES"] = True
 app.config["FREEZER_DESTINATION_IGNORE"] = ["data.db", ".git", ".gitignore", "README.md"]
 app.config["FREEZER_DESTINATION"] = f"../../{PROJECT_NAME}/"
 app.config["FREEZER_STATIC_IGNORE"] = ["*manage*", "*add_image*"]
+app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
+
 
 # Set options for Jinja templating engine
 app.jinja_env.trim_blocks = True
